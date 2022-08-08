@@ -1,0 +1,16 @@
+name: CubeCore
+main: io.siggi.cubecore.bukkit.CubeCoreBukkit
+version: ${project.version}
+author: Siggi
+description: The CubeCore plugin.
+depend: [ NBTTool ]
+api-version: 1.13
+commands:
+  unsignbook:
+    description: Unsign a book
+    permission: cubecore.unsignbook
+    usage: /<command>
+permissions:
+  cubecore.unsignbook:
+    description: Allow the player to unsign a book.
+    default: op

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.siggi</groupId>
+    <artifactId>CubeCore-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>NBTTool</artifactId>
+            <version>1.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <modules>
+        <module>CubeCore</module>
+        <module>CubeCore-base</module>
+        <module>CubeCore-bukkit</module>
+        <module>CubeCore-bungee</module>
+        <module>nms-base</module>
+        <module>nms-8R1</module>
+        <module>nms-8R2</module>
+        <module>nms-8R3</module>
+        <module>nms-9R1</module>
+        <module>nms-9R2</module>
+        <module>nms-10R1</module>
+        <module>nms-11R1</module>
+        <module>nms-12R1</module>
+        <module>nms-13R1</module>
+        <module>nms-13R2</module>
+        <module>nms-14R1</module>
+        <module>nms-15R1</module>
+        <module>nms-16R1</module>
+        <module>nms-16R2</module>
+        <module>nms-16R3</module>
+        <module>nms-17R1</module>
+        <module>nms-18R1</module>
+        <module>nms-18R2</module>
+        <module>nms-19R1</module>
+    </modules>
+</project>
