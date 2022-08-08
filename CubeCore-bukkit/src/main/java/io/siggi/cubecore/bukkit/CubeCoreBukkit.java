@@ -5,6 +5,7 @@ import io.siggi.cubecore.CubeCore;
 import io.siggi.cubecore.CubeCorePlugin;
 import io.siggi.cubecore.bukkit.actionitem.ActionItems;
 import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
+import io.siggi.cubecore.bukkit.interactableinventory.InteractableInventoryListener;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
@@ -82,6 +83,7 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         getServer().getPluginManager().registerEvents(cacheUpdater, this);
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);
+        getServer().getPluginManager().registerEvents(new InteractableInventoryListener(this), this);
         getServer().getPluginManager().registerEvents(WorldProviders.getListener(), this);
         getServer().getPluginManager().registerEvents(ActionItems.getListener(), this);
 
