@@ -8,6 +8,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.protocol.Property;
 
 public class CacheUpdaterBungee implements Listener {
     private final UserCache cache;
@@ -24,7 +25,7 @@ public class CacheUpdaterBungee implements Listener {
 
         LoginResult profile = ((InitialHandler) player.getPendingConnection()).getLoginProfile();
         try {
-            LoginResult.Property property = getProperty(profile.getProperties(), "textures");
+            Property property = getProperty(profile.getProperties(), "textures");
             String value = property.getValue();
             String signature = property.getSignature();
             cache.getTextures().store(player.getUniqueId(), value, signature);
@@ -32,8 +33,8 @@ public class CacheUpdaterBungee implements Listener {
         }
     }
 
-    private LoginResult.Property getProperty(LoginResult.Property[] properties, String name) {
-        for (LoginResult.Property property : properties) {
+    private Property getProperty(Property[] properties, String name) {
+        for (Property property : properties) {
             if (name.equals(property.getName()))
                 return property;
         }
