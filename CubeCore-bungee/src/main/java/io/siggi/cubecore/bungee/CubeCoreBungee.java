@@ -3,6 +3,7 @@ package io.siggi.cubecore.bungee;
 import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.CubeCore;
 import io.siggi.cubecore.CubeCorePlugin;
+import io.siggi.cubecore.bungee.brigadier.BungeeBrigadierPatcher;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
@@ -60,6 +61,8 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         CubeCoreMessengerBungee.setHandler("cubecore:chatAsPlayer", (p, subChannel, in) -> {
             chatAsPlayer(p, in.readUTF());
         });
+
+        BungeeBrigadierPatcher.setup(this);
     }
 
     @Override
