@@ -20,6 +20,17 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     }
 
     /**
+     * Send a chat message or command as a player. On 1.19 and up, this may fail for chat messages and commands used for
+     * sending chat messages depending on whether chat signatures are enforced or not.
+     *
+     * @param p
+     * @param message
+     */
+    public static void chatAsPlayer(ProxiedPlayer p, String message) {
+        PacketSpoofer.chatAsPlayer(p, message);
+    }
+
+    /**
      * Open a book for a player.
      *
      * @param p
@@ -47,7 +58,7 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         getProxy().getPluginManager().registerListener(this, cacheUpdater);
 
         CubeCoreMessengerBungee.setHandler("cubecore:chatAsPlayer", (p, subChannel, in) -> {
-            p.chat(in.readUTF());
+            chatAsPlayer(p, in.readUTF());
         });
     }
 
