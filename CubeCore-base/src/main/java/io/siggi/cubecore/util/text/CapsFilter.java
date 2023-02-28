@@ -34,17 +34,15 @@ public class CapsFilter implements TextFilter {
         char newCharacter;
         for (int i = 0; i < c.length; i++) {
             originalCharacter = newCharacter = c[i];
-            if (originalCharacter >= 'A' && originalCharacter <= 'Z') { // Capital Letter
+            if (Character.isUpperCase(originalCharacter)) {
                 if (insideWord) {
-                    newCharacter = originalCharacter;
-                    newCharacter += 32; // convert to lowercase
+                    newCharacter = Character.toLowerCase(originalCharacter);
                 }
                 beginSentence = false;
                 insideWord = true;
-            } else if (originalCharacter >= 'a' && originalCharacter <= 'z') { // Lowercase Letter
+            } else if (Character.isLowerCase(originalCharacter)) {
                 if (beginSentence) {
-                    newCharacter = originalCharacter;
-                    newCharacter -= 32; // convert to uppercase
+                    newCharacter = Character.toUpperCase(originalCharacter);
                 }
                 beginSentence = false;
                 insideWord = true;
