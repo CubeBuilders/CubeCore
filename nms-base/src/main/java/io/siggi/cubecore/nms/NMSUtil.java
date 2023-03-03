@@ -101,6 +101,7 @@ public abstract class NMSUtil {
         }
         throw nsfe;
     }
+    // </editor-fold>
 
     /**
      * Get BrigadierUtil which may be null if it is not supported on the current server version.
@@ -237,5 +238,4 @@ public abstract class NMSUtil {
     public void setClientSideOpLevel(@Nonnull Player p, int opLevel) {
         sendPacket(p, createEntityStatusPacket(p, clamp(opLevel, 0, 4) + 24));
     }
-    // </editor-fold>
 }
