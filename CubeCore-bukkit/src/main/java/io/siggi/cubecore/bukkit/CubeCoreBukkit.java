@@ -8,15 +8,12 @@ import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
-import io.siggi.cubecore.nms.NMSUtil;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
 import java.util.List;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -60,24 +57,12 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         }
     }
 
-    public static void openSign(Player p, Block block) {
-        NMSUtil.get().openSign(p, block);
-    }
-
-    public static void openSign(Player p, Sign sign) {
-        NMSUtil.get().openSign(p, sign);
-    }
-
     public static void openBook(Player p, List<? extends BaseComponent> pages) {
         p.openBook(createBook("CubeCore", "CubeCore", pages));
     }
 
     public static ItemStack createBook(String title, String author, List<? extends BaseComponent> pages) {
         return NBTToolBukkit.itemFromNBT(CubeCore.createBook(title, author, pages));
-    }
-
-    public static void setClientSideOpLevel(Player p, int opLevel) {
-        NMSUtil.get().setClientSideOpLevel(p, opLevel);
     }
 
     @Override
