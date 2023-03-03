@@ -238,4 +238,14 @@ public abstract class NMSUtil {
     public void setClientSideOpLevel(@Nonnull Player p, int opLevel) {
         sendPacket(p, createEntityStatusPacket(p, clamp(opLevel, 0, 4) + 24));
     }
+
+    /**
+     * Set the walk destination for an entity to path find to.
+     *
+     * @param entity the entity to set a walk destination for
+     * @param x      the x coordinate of the destination
+     * @param y      the y coordinate of the destination
+     * @param z      the z coordinate of the destination
+     */
+    public abstract void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z);
 }

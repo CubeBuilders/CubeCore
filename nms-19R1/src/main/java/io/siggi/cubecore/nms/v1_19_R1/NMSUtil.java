@@ -14,6 +14,8 @@ import net.minecraft.network.syncher.DataWatcherObject;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.PlayerChunkMap;
 import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.entity.EntityInsentient;
+import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.entity.player.EnumChatVisibility;
 import net.minecraft.world.level.block.entity.TileEntitySkull;
@@ -21,6 +23,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_19_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_19_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
@@ -158,6 +161,16 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
         net.minecraft.world.entity.Entity nmsEntity = craftEntity.getHandle();
 
         return new PacketPlayOutEntityStatus(nmsEntity, (byte) status);
+    }
+
+    @Override
+    public void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z) {
+        CraftLivingEntity ce = (CraftLivingEntity) entity;
+        EntityLiving ent = ce.getHandle();
+        if (ent instanceof EntityInsentient) {
+            EntityInsentient ei = (EntityInsentient) ent;
+            ei.D().a(x, y, z, 1.0D);
+        }
     }
 
     private abstract static class PA extends EntityHuman {

@@ -6,6 +6,8 @@ import io.siggi.cubecore.nms.ChatSetting;
 import io.siggi.cubecore.nms.SkinSettings;
 import javax.annotation.Nonnull;
 import net.minecraft.server.v1_8_R1.BlockPosition;
+import net.minecraft.server.v1_8_R1.EntityInsentient;
+import net.minecraft.server.v1_8_R1.EntityLiving;
 import net.minecraft.server.v1_8_R1.EntityPlayer;
 import net.minecraft.server.v1_8_R1.EnumChatVisibility;
 import net.minecraft.server.v1_8_R1.GameProfileSerializer;
@@ -22,6 +24,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R1.block.CraftSign;
 import org.bukkit.craftbukkit.v1_8_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
@@ -171,5 +174,15 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
         net.minecraft.server.v1_8_R1.Entity nmsEntity = craftEntity.getHandle();
 
         return new PacketPlayOutEntityStatus(nmsEntity, (byte) status);
+    }
+
+    @Override
+    public void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z) {
+        CraftLivingEntity ce = (CraftLivingEntity) entity;
+        EntityLiving ent = ce.getHandle();
+        if (ent instanceof EntityInsentient) {
+            EntityInsentient ei = (EntityInsentient) ent;
+            ei.getNavigation().a(x, y, z, 1.0D);
+        }
     }
 }

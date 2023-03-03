@@ -3,8 +3,11 @@ package io.siggi.cubecore.nms;
 import com.mojang.authlib.GameProfile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.world.entity.EntityInsentient;
+import net.minecraft.world.entity.EntityLiving;
 import org.bukkit.World;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,6 +56,10 @@ public class NullNMSUtil extends NMSUtil {
     @Override
     public Object createEntityStatusPacket(@Nonnull Entity entity, int status) {
         return null;
+    }
+
+    @Override
+    public void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z) {
     }
 
     public BrigadierUtil getBrigadierUtil() {
