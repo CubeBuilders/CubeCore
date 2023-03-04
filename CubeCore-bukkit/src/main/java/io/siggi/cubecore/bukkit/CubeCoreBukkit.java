@@ -14,6 +14,7 @@ import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
 import java.util.List;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -78,12 +79,19 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         getCommand("unsignbook").setExecutor(commandUnsignBook);
         getCommand("unsignbook").setTabCompleter(commandUnsignBook);
 
-        CacheUpdaterBukkit cacheUpdater = new CacheUpdaterBukkit(CubeCore.getUserCache());
-        getServer().getPluginManager().registerEvents(cacheUpdater, this);
+        EventListenerBukkit eventListener = new EventListenerBukkit(CubeCore.getUserCache());
+        getServer().getPluginManager().registerEvents(eventListener, this);
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);
         getServer().getPluginManager().registerEvents(WorldProviders.getListener(), this);
         getServer().getPluginManager().registerEvents(ActionItems.getListener(), this);
+
+        BrandReceiverBukkit brandReceiverBukkit = new BrandReceiverBukkit();
+        try {
+            getServer().getMessenger().registerIncomingPluginChannel(this, "MC|Brand", brandReceiverBukkit);
+        } catch (IllegalArgumentException e) {
+            getServer().getMessenger().registerIncomingPluginChannel(this, "minecraft:brand", brandReceiverBukkit);
+        }
 
         CubeCoreMessengerBukkit.setHandler("cubecore:openBook", (p, subChannel, in) -> {
             byte[] serializedBook = new byte[in.readInt()];

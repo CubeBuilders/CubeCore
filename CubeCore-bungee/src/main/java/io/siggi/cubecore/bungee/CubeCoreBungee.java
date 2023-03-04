@@ -58,9 +58,12 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     public void onEnable() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
-        CacheUpdaterBungee cacheUpdater = new CacheUpdaterBungee(CubeCore.getUserCache());
+        EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserCache());
         getProxy().getPluginManager().registerListener(this, CubeCoreMessengerBungee.getListener());
-        getProxy().getPluginManager().registerListener(this, cacheUpdater);
+        getProxy().getPluginManager().registerListener(this, eventListener);
+
+        BrandReceiverBungee brandReceiver = new BrandReceiverBungee();
+        getProxy().getPluginManager().registerListener(this, brandReceiver);
 
         CubeCoreMessengerBungee.setHandler("cubecore:chatAsPlayer", (p, subChannel, in) -> {
             chatAsPlayer(p, in.readUTF());

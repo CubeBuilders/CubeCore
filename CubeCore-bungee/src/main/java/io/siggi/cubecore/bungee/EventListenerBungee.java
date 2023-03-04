@@ -1,8 +1,10 @@
 package io.siggi.cubecore.bungee;
 
+import io.siggi.cubecore.session.PlayerSession;
 import io.siggi.cubecore.usercache.UserCache;
 import java.util.NoSuchElementException;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.connection.InitialHandler;
@@ -10,10 +12,10 @@ import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.protocol.Property;
 
-public class CacheUpdaterBungee implements Listener {
+public class EventListenerBungee implements Listener {
     private final UserCache cache;
 
-    public CacheUpdaterBungee(UserCache cache) {
+    public EventListenerBungee(UserCache cache) {
         this.cache = cache;
     }
 
@@ -31,6 +33,11 @@ public class CacheUpdaterBungee implements Listener {
             cache.getTextures().store(player.getUniqueId(), value, signature);
         } catch (NoSuchElementException | NullPointerException e) {
         }
+    }
+
+    @EventHandler
+    public void playerQuit(PlayerDisconnectEvent event) {
+        PlayerSession.clear(event.getPlayer().getUniqueId());
     }
 
     private Property getProperty(Property[] properties, String name) {
