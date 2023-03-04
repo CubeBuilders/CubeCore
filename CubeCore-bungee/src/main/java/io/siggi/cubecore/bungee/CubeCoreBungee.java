@@ -31,7 +31,7 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     }
 
     /**
-     * Open a book for a player.
+     * Open a book for a player. Only works if the backend server the player is currently connected to has CubeCore.
      *
      * @param p
      * @param pages
@@ -45,6 +45,11 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         }));
     }
 
+    /**
+     * Resend Commands packet. Only works if the backend server the player is currently connected to has CubeCore.
+     *
+     * @param p
+     */
     public static void refreshCommands(ProxiedPlayer p) {
         CubeCoreMessengerBungee.send(p, new OutboundPluginMessageBuilder("cubecore:refreshCommands"));
     }

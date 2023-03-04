@@ -164,6 +164,12 @@ public final class CubeCoreLocation {
         return null;
     }
 
+    /**
+     * Convert this CubeCoreLocation to a Bukkit Location, loading the world if needed. Do not call this method if you
+     * don't want to load a world that is currently unloaded.
+     *
+     * @return the Bukkit Location.
+     */
     public Location toBukkitLocation() {
         World world = getWorld();
         if (world == null)
