@@ -29,7 +29,7 @@ import static org.bukkit.event.inventory.InventoryAction.DROP_ONE_SLOT;
 import static org.bukkit.event.inventory.InventoryAction.HOTBAR_SWAP;
 
 public class ActionItems {
-    private static final Listener listener = new BungeeActionItemsListener();
+    private static final Listener listener = new BukkitActionItemsListener();
 
     public static Listener getListener() {
         return listener;
@@ -80,7 +80,7 @@ public class ActionItems {
         DROP, DESTROY, DENY;
     }
 
-    public static class BungeeActionItemsListener implements Listener {
+    public static class BukkitActionItemsListener implements Listener {
         @EventHandler
         public void playerJoin(PlayerJoinEvent event) {
             cleanInventory(event.getPlayer());
