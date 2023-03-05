@@ -9,6 +9,7 @@ import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
+import io.siggi.cubecore.util.DataAuthentication;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
@@ -71,6 +72,7 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
     public void onEnable() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
+        DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
         if (isBungeeCordServer()) {
             getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", CubeCoreMessengerBukkit.getListener());
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -85,7 +87,6 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);
         getServer().getPluginManager().registerEvents(WorldProviders.getListener(), this);
-        ActionItems.setupHash(new File(getDataFolder(), "actionitems-salt.txt"));
         getServer().getPluginManager().registerEvents(ActionItems.getListener(), this);
 
         BrandReceiverBukkit brandReceiverBukkit = new BrandReceiverBukkit();

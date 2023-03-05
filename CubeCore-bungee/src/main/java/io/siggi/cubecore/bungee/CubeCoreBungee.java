@@ -4,8 +4,10 @@ import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.CubeCore;
 import io.siggi.cubecore.CubeCorePlugin;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
+import io.siggi.cubecore.util.DataAuthentication;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
+import java.io.File;
 import java.util.List;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -58,6 +60,7 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     public void onEnable() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
+        DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
         EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserCache());
         getProxy().getPluginManager().registerListener(this, CubeCoreMessengerBungee.getListener());
         getProxy().getPluginManager().registerListener(this, eventListener);
