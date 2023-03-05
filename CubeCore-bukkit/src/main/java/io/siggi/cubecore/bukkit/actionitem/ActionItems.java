@@ -4,7 +4,11 @@ import io.siggi.cubecore.bukkit.CubeCoreBukkit;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTToolBukkit;
+import java.util.Locale;
 import java.util.Map;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -23,6 +27,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ALL_CURSOR;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ALL_SLOT;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ONE_CURSOR;
@@ -34,6 +39,31 @@ public class ActionItems {
 
     public static Listener getListener() {
         return listener;
+    }
+
+    public static ItemStack createActionItem(ItemStack item, BaseComponent title, boolean shine, String action, DropBehavior dropBehavior) {
+        if (item == null) throw new NullPointerException("null item");
+        if (action == null) throw new NullPointerException("null action");
+        NBTCompound tag = NBTToolBukkit.getTag(item);
+        if (tag == null) tag = new NBTCompound();
+        if (action != null)
+            tag.setString("actionitem-action", action);
+        if (dropBehavior == null) dropBehavior = DropBehavior.DROP;
+        tag.setString("actionitem-drop", dropBehavior.name().toLowerCase(Locale.ROOT));
+        if (title != null) {
+            NBTCompound display = tag.getCompound("display");
+            if (display == null) display = new NBTCompound();
+            display.setString("Name", ComponentSerializer.toString(title));
+            tag.setCompound("display", display);
+        }
+        tag.setInt("HideFlags", 1);
+        ItemStack itemStack = NBTToolBukkit.setTag(item, tag);
+        if (shine) {
+            ItemMeta meta = itemStack.getItemMeta();
+            meta.addEnchant(Enchantment.LURE, 1, true);
+            itemStack.setItemMeta(meta);
+        }
+        return itemStack;
     }
 
     public static String getAction(ItemStack item) {
