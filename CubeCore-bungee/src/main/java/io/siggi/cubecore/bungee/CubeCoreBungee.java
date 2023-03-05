@@ -7,8 +7,11 @@ import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.util.DataAuthentication;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
+import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -60,6 +63,22 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     public void onEnable() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
+        if (!new File("CubeCore/usercache/names.txt").exists())
+        try (BufferedReader reader = new BufferedReader(new FileReader("plugins/BungeeChat/UUIDs.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    int pos = line.indexOf("=");
+                    if (pos == -1) continue;
+                    UUID uuid = UUID.fromString(line.substring(0, pos));
+                    String name = line.substring(pos + 1);
+                    CubeCore.getUserCache().getNames().store(uuid, name);
+                } catch (Exception e) {
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
         EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserCache());
         getProxy().getPluginManager().registerListener(this, CubeCoreMessengerBungee.getListener());
