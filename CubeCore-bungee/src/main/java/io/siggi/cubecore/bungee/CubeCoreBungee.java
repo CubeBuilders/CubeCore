@@ -70,6 +70,9 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         });
     }
 
+    /**
+     * Do not call this method. Use {@link CubeCore#registerTypeAdapters(GsonBuilder)} instead.
+     */
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
     }

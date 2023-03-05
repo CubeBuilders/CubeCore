@@ -106,6 +106,9 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         });
     }
 
+    /**
+     * Do not call this method. Use {@link CubeCore#registerTypeAdapters(GsonBuilder)} instead.
+     */
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
