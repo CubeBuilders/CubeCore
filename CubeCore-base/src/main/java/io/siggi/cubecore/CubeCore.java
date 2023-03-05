@@ -2,10 +2,13 @@ package io.siggi.cubecore;
 
 import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.usercache.UserCache;
+import io.siggi.cubecore.util.text.FormattedText;
+import io.siggi.cubecore.util.text.TextPiece;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTList;
 import java.io.File;
 import java.util.List;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 
@@ -63,6 +66,9 @@ public class CubeCore {
 
     public static GsonBuilder registerTypeAdapters(GsonBuilder builder) {
         instance.plugin.registerTypeAdapters(builder);
+        builder.registerTypeAdapter(FormattedText.class, FormattedText.typeAdapter);
+        builder.registerTypeAdapter(TextPiece.class, TextPiece.typeAdapter);
+        builder.registerTypeAdapter(ChatColor.class, TextPiece.chatColorTypeAdapter);
         return builder;
     }
 }

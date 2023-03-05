@@ -2,8 +2,11 @@ package io.siggi.cubecore.util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class CubeCoreUtil {
     private CubeCoreUtil() {
@@ -45,5 +48,11 @@ public class CubeCoreUtil {
                 current.remove();
             }
         };
+    }
+
+    public static TextComponent glueComponents(List<? extends BaseComponent> components) {
+        TextComponent holder = new TextComponent("");
+        components.forEach(holder::addExtra);
+        return holder;
     }
 }
