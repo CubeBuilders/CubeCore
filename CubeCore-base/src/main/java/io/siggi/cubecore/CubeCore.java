@@ -25,6 +25,10 @@ public class CubeCore {
         this.plugin = plugin;
         this.dataFolder = dataFolder;
 
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+
         if (instance != null) {
             throw new IllegalStateException("CubeCore has already been instantiated");
         }

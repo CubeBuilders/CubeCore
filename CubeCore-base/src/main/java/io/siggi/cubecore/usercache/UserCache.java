@@ -17,6 +17,9 @@ public final class UserCache {
 
     public UserCache(File root) {
         this.root = root;
+        if (!root.exists()) {
+            root.mkdirs();
+        }
         this.names = new NameCache(new File(root, "names.txt"));
         this.nicks = new NameCache(new File(root, "nicks.txt"));
         this.lastLogins = new LastLogins(new File(root, "lastlogins.txt"));
