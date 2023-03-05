@@ -30,6 +30,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ALL_CURSOR;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ALL_SLOT;
 import static org.bukkit.event.inventory.InventoryAction.DROP_ONE_CURSOR;
@@ -74,8 +75,8 @@ public class ActionItems {
         String action = tag.getString("actionitem-action");
         if (action == null || action.equals("")) return null;
         String hash = tag.getString("actionitem-hash");
-        if (hash == null || hash.equals("")) return null;
-        if (!DataAuthentication.validateHash("ActionItems", action, hash)) return null;
+        if (hash == null || hash.equals("")) return "INVALID";
+        if (!DataAuthentication.validateHash("ActionItems", action, hash)) return "INVALID";
         return action;
     }
 
@@ -140,6 +141,15 @@ public class ActionItems {
             String action = getAction(item);
             if (action == null)
                 return;
+            if (action.equals("INVALID")) {
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        event.getPlayer().getInventory().remove(item);
+                    }
+                }.runTaskLater(CubeCoreBukkit.getInstance(), 1L);
+                return;
+            }
             event.setCancelled(true);
             CubeCoreBukkit.chatAsPlayer(event.getPlayer(), action);
         }
