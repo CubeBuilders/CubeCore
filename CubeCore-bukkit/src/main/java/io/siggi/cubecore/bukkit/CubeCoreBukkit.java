@@ -12,6 +12,7 @@ import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
+import java.io.File;
 import java.util.List;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -84,6 +85,7 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);
         getServer().getPluginManager().registerEvents(WorldProviders.getListener(), this);
+        ActionItems.setupHash(new File(getDataFolder(), "actionitems-salt.txt"));
         getServer().getPluginManager().registerEvents(ActionItems.getListener(), this);
 
         BrandReceiverBukkit brandReceiverBukkit = new BrandReceiverBukkit();

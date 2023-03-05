@@ -2,8 +2,17 @@ package io.siggi.cubecore.bukkit.actionitem;
 
 import io.siggi.cubecore.bukkit.CubeCoreBukkit;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
+import io.siggi.cubecore.util.CubeCoreUtil;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTToolBukkit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -36,9 +45,36 @@ import static org.bukkit.event.inventory.InventoryAction.HOTBAR_SWAP;
 
 public class ActionItems {
     private static final Listener listener = new BukkitActionItemsListener();
+    private static byte[] salt;
 
     public static Listener getListener() {
         return listener;
+    }
+
+    public static void setupHash(File saltFile) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(saltFile))) {
+            String hex = reader.readLine();
+            salt = CubeCoreUtil.hexToBytes(hex);
+        } catch (Exception e) {
+            SecureRandom random = new SecureRandom();
+            salt = new byte[32];
+            random.nextBytes(salt);
+            try (FileOutputStream out = new FileOutputStream(saltFile)) {
+                out.write(CubeCoreUtil.bytesToHex(salt).getBytes());
+            } catch (Exception e2) {
+            }
+        }
+    }
+
+    public static byte[] createHash(String action) {
+        MessageDigest sha256 = CubeCoreUtil.sha256();
+        sha256.update(action.getBytes(StandardCharsets.UTF_8));
+        sha256.update(salt);
+        return sha256.digest();
+    }
+
+    public static boolean validateHash(String action, byte[] hash) {
+        return Arrays.equals(hash, createHash(action));
     }
 
     public static ItemStack createActionItem(ItemStack item, BaseComponent title, boolean shine, String action, DropBehavior dropBehavior) {
@@ -46,8 +82,8 @@ public class ActionItems {
         if (action == null) throw new NullPointerException("null action");
         NBTCompound tag = NBTToolBukkit.getTag(item);
         if (tag == null) tag = new NBTCompound();
-        if (action != null)
-            tag.setString("actionitem-action", action);
+        tag.setString("actionitem-action", action);
+        tag.setString("actionitem-hash", CubeCoreUtil.bytesToHex(createHash(action)));
         if (dropBehavior == null) dropBehavior = DropBehavior.DROP;
         tag.setString("actionitem-drop", dropBehavior.name().toLowerCase(Locale.ROOT));
         if (title != null) {
@@ -71,6 +107,9 @@ public class ActionItems {
         if (tag == null) return null;
         String action = tag.getString("actionitem-action");
         if (action == null || action.equals("")) return null;
+        String hash = tag.getString("actionitem-hash");
+        if (hash == null || hash.equals("")) return null;
+        if (!validateHash(action, CubeCoreUtil.hexToBytes(hash))) return null;
         return action;
     }
 
