@@ -11,6 +11,10 @@ public class CanonicalItem {
     private final NBTCompound stack;
     private final ItemStack item;
 
+    private boolean automatic = false;
+    private int automaticSlot = -1;
+    private boolean givenOnCrossWorldTeleport = false;
+
     CanonicalItem(Plugin plugin, String id, NBTCompound stack) {
         this.plugin = plugin;
         this.id = id;
@@ -46,5 +50,33 @@ public class CanonicalItem {
         ItemStack itemStack = getItemStack();
         itemStack.setAmount(count);
         return itemStack;
+    }
+
+    public boolean isAutomatic() {
+        return automatic;
+    }
+
+    public CanonicalItem setAutomatic(boolean automatic) {
+        this.automatic = automatic;
+        return this;
+    }
+
+    public int getAutomaticSlot() {
+        return automaticSlot;
+    }
+
+    public CanonicalItem setAutomaticSlot(int automaticSlot) {
+        this.automatic = true;
+        this.automaticSlot = automaticSlot;
+        return this;
+    }
+
+    public boolean isGivenOnCrossWorldTeleport() {
+        return givenOnCrossWorldTeleport;
+    }
+
+    public CanonicalItem setGivenOnCrossWorldTeleport(boolean given) {
+        this.givenOnCrossWorldTeleport = given;
+        return this;
     }
 }

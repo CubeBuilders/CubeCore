@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Item;
@@ -26,11 +27,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -149,6 +152,30 @@ public class CanonicalItems {
         }
     }
 
+    public static void giveAutomaticItems(Player p, boolean isJoinOrRespawn) {
+        PlayerInventory inventory = p.getInventory();
+        for (CanonicalItem item : items.values()) {
+            if (item.isAutomatic() && (item.isGivenOnCrossWorldTeleport() || isJoinOrRespawn)) {
+                ItemStack itemStack = item.getItemStack();
+                int slot = item.getAutomaticSlot();
+                if (slot >= 0) {
+                    ItemStack currentItem = inventory.getItem(slot);
+                    if (currentItem != null && currentItem.getType() != Material.AIR) {
+                        slot = -1;
+                    }
+                }
+                if (inventory.contains(itemStack)) {
+                    continue;
+                }
+                if (slot == -1) {
+                    inventory.addItem(itemStack);
+                } else {
+                    inventory.setItem(slot, itemStack);
+                }
+            }
+        }
+    }
+
     public static List<Listener> getListeners() {
         return listeners;
     }
@@ -188,6 +215,7 @@ public class CanonicalItems {
         public void playerJoin(PlayerJoinEvent event) {
             Player p = event.getPlayer();
             replaceItemsOnPlayerDelayed(p);
+            giveAutomaticItems(p, true);
         }
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -200,6 +228,15 @@ public class CanonicalItems {
         public void playerTeleport(PlayerTeleportEvent event) {
             Player p = event.getPlayer();
             replaceItemsOnPlayerDelayed(p);
+            if (event.getFrom().getWorld() != event.getTo().getWorld()) {
+                giveAutomaticItems(p, false);
+            }
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void playerRespawn(PlayerRespawnEvent event) {
+            Player p = event.getPlayer();
+            giveAutomaticItems(p, true);
         }
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
