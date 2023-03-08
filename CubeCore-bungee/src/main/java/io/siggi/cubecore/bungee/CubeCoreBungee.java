@@ -44,6 +44,16 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
      */
     public static void openBook(ProxiedPlayer p, List<? extends BaseComponent> pages) {
         NBTCompound nbtBook = CubeCore.createBook("CubeCore", "CubeCore", pages);
+        openBook(p, nbtBook);
+    }
+
+    /**
+     * Open a book for a player. Only works if the backend server the player is currently connected to has CubeCore.
+     *
+     * @param p
+     * @param pages
+     */
+    public static void openBook(ProxiedPlayer p, NBTCompound nbtBook) {
         byte[] serializedBook = NBTTool.serialize(nbtBook);
         CubeCoreMessengerBungee.send(p, new OutboundPluginMessageBuilder("cubecore:openBook").write((out) -> {
             out.writeInt(serializedBook.length);
