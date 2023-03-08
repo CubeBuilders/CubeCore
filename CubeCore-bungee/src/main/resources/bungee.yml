@@ -3,4 +3,4 @@ main: io.siggi.cubecore.bungee.CubeCoreBungee
 version: ${project.version}
 author: Siggi
 description: The CubeCore plugin.
-softdepends: [ NBTTool ]
+softdepends: [ NBTTool, floodgate ]

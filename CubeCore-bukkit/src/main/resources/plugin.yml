@@ -3,7 +3,7 @@ main: io.siggi.cubecore.bukkit.CubeCoreBukkit
 version: ${project.version}
 author: Siggi
 description: The CubeCore plugin.
-depend: [ NBTTool ]
+depend: [ NBTTool, floodgate ]
 api-version: 1.13
 commands:
   unsignbook:
