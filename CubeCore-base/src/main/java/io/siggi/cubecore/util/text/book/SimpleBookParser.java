@@ -22,7 +22,8 @@ public class SimpleBookParser implements BookParser {
     }
 
     @Override
-    public NBTCompound parseBook(LineReader reader, boolean useFallbackColor) throws IOException {
+    public NBTCompound parseBook(LineReader reader, boolean useFallbackColor, boolean forBedrock) throws IOException {
+        if (forBedrock) useFallbackColor = true;
         String title = "CubeCore Book";
         String author = "CubeCore";
         List<Page> pages = new ArrayList<>();
@@ -50,6 +51,12 @@ public class SimpleBookParser implements BookParser {
                 pages.add(page);
                 pageNumbersByName.put(line.substring(6), page.number);
                 continue;
+            } else if (line.startsWith("#j ")) {
+                if (forBedrock) continue;
+                line = line.substring(2);
+            } else if (line.startsWith("#b ")) {
+                if (!forBedrock) continue;
+                line = line.substring(2);
             }
             if (page != null) {
                 page.builder.append(line).append("\n");

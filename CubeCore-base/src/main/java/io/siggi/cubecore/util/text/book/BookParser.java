@@ -8,17 +8,12 @@ import java.io.IOException;
 
 @FunctionalInterface
 public interface BookParser {
-    default NBTCompound loadBook(File file) throws IOException {
-        return loadBook(file, false);
-    }
-    default NBTCompound loadBook(File file, boolean useFallbackColor) throws IOException {
+
+    default NBTCompound loadBook(File file, boolean useFallbackColor, boolean forBedrock) throws IOException {
         try (LineReader reader = new LineReader(new FileInputStream(file))) {
-            return parseBook(reader, useFallbackColor);
+            return parseBook(reader, useFallbackColor, forBedrock);
         }
     }
 
-    default NBTCompound parseBook(LineReader reader) throws IOException {
-        return parseBook(reader, false);
-    }
-    NBTCompound parseBook(LineReader reader, boolean useFallbackColor) throws IOException;
+    NBTCompound parseBook(LineReader reader, boolean useFallbackColor, boolean forBedrock) throws IOException;
 }
