@@ -3,15 +3,19 @@ package io.siggi.cubecore.bungee;
 import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.CubeCore;
 import io.siggi.cubecore.CubeCorePlugin;
+import io.siggi.cubecore.bedrockapi.BedrockDeviceInfo;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.util.DataAuthentication;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.protocol.ProtocolConstants;
 
 public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     private static CubeCoreBungee instance;
@@ -78,5 +82,15 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
      */
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
+    }
+
+    public static boolean shouldUseFallbackColors(PendingConnection pendingConnection) {
+        UUID uuid = pendingConnection.getUniqueId();
+        return (uuid != null && BedrockDeviceInfo.isOnBedrock(uuid))
+            || pendingConnection.getVersion() < ProtocolConstants.MINECRAFT_1_16;
+    }
+
+    public static boolean shouldUseFallbackColors(ProxiedPlayer player) {
+        return shouldUseFallbackColors(player.getPendingConnection());
     }
 }
