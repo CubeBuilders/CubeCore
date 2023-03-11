@@ -138,6 +138,15 @@ public final class CubeCoreLocation {
         return yaw;
     }
 
+    /**
+     * Determine if the world for this location can be loaded.
+     *
+     * @return true if the world can be loaded, false otherwise.
+     */
+    public boolean isWorldLoadable() {
+        return WorldProviders.isWorldLoadable(worldUid, worldName);
+    }
+
     private World getWorld() {
         World world;
 
