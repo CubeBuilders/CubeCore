@@ -4,7 +4,8 @@ import java.util.UUID;
 import org.bukkit.World;
 
 public interface WorldProvider {
-    public World loadWorld(String name);
 
-    public World loadWorld(UUID uuid);
+    boolean isWorldLoadable(UUID worldUuid, String name);
+
+    World loadWorld(UUID worldUuid, String name);
 }

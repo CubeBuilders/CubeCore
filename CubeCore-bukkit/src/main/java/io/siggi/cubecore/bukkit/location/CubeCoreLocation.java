@@ -152,12 +152,7 @@ public final class CubeCoreLocation {
         }
 
         if (worldName != null) {
-            world = WorldProviders.loadWorld(worldName);
-            if (world != null) return world;
-        }
-
-        if (worldUid != null) {
-            world = WorldProviders.loadWorld(worldUid);
+            world = WorldProviders.loadWorld(worldUid, worldName);
             if (world != null) return world;
         }
 
