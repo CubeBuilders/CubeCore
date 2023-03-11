@@ -72,7 +72,7 @@ public class SimpleBookParser implements BookParser {
                 rawText = rawText.replace("${" + pageName + "}", Integer.toString(pageNumber));
             }
             FormattedText formattedText = textProcessor.process(rawText, null, null);
-            TextComponent pageComponent = CubeCoreUtil.glueComponents(formattedText.toTextComponents(false));
+            TextComponent pageComponent = CubeCoreUtil.glueComponents(formattedText.toTextComponents(useFallbackColor));
             pageComponents.add(pageComponent);
         }
         return CubeCore.createBook(title, author, pageComponents);
