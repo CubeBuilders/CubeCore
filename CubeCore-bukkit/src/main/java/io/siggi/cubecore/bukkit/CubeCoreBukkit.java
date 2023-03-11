@@ -15,6 +15,7 @@ import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -66,6 +67,14 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
 
     public static ItemStack createBook(String title, String author, List<? extends BaseComponent> pages) {
         return NBTToolBukkit.itemFromNBT(CubeCore.createBook(title, author, pages));
+    }
+
+    public static ItemStack createPlayerHead(UUID player) {
+        return NBTToolBukkit.itemFromNBT(CubeCore.createPlayerHead(player));
+    }
+
+    public static ItemStack createPlayerHead(UUID player, String name, String textures, String texturesSignature) {
+        return NBTToolBukkit.itemFromNBT(CubeCore.createPlayerHead(player, name, textures, texturesSignature));
     }
 
     @Override

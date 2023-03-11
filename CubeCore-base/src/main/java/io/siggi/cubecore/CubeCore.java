@@ -1,6 +1,7 @@
 package io.siggi.cubecore;
 
 import com.google.gson.GsonBuilder;
+import io.siggi.cubecore.usercache.TextureCache;
 import io.siggi.cubecore.usercache.UserCache;
 import io.siggi.cubecore.util.text.FormattedText;
 import io.siggi.cubecore.util.text.TextPiece;
@@ -8,6 +9,7 @@ import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTList;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -66,6 +68,57 @@ public class CubeCore {
         }
 
         return book;
+    }
+
+    public static NBTCompound createPlayerHead(UUID player) {
+        if (player == null)
+            return createPlayerHead(null, null, null, null);
+        String name = getUserCache().getName(player);
+        TextureCache.Entry entry = getUserCache().getTextures().get(player);
+        String payload, signature;
+        if (entry == null) {
+            payload = signature = null;
+        } else {
+            payload = entry.getPayload();
+            signature = entry.getSignature();
+        }
+        return createPlayerHead(player, name, payload, signature);
+    }
+
+    public static NBTCompound createPlayerHead(UUID player, String name, String textures, String texturesSignature) {
+        NBTCompound head = new NBTCompound();
+        head.setString("id", "minecraft:skull");
+        head.setByte("Count", (byte) 1);
+        head.setShort("Damage", (short) 3);
+
+        NBTCompound tag = new NBTCompound();
+
+        NBTCompound skullOwner = new NBTCompound();
+
+        if (player != null)
+            skullOwner.setString("Id", player.toString());
+        if (name != null)
+            skullOwner.setString("Name", name);
+
+        if (textures != null && texturesSignature != null) {
+            NBTCompound properties = new NBTCompound();
+            skullOwner.setCompound("Properties", properties);
+
+            NBTList textureList = new NBTList();
+            properties.setList("textures", textureList);
+
+            NBTCompound texturePayload = new NBTCompound();
+            textureList.addCompound(texturePayload);
+            texturePayload.setString("Value", textures);
+            texturePayload.setString("Signature", texturesSignature);
+        }
+
+        if (skullOwner.size() > 0) {
+            tag.setCompound("SkullOwner", skullOwner);
+            head.setCompound("tag", tag);
+        }
+
+        return head;
     }
 
     public static GsonBuilder registerTypeAdapters(GsonBuilder builder) {
