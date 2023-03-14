@@ -3,6 +3,7 @@ package io.siggi.cubecore.bukkit;
 import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.CubeCore;
 import io.siggi.cubecore.CubeCorePlugin;
+import io.siggi.cubecore.bedrockapi.BedrockDeviceInfo;
 import io.siggi.cubecore.bukkit.actionitem.ActionItems;
 import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
@@ -137,5 +138,11 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
+    }
+
+    public static boolean shouldUseFallbackColors(Player p) {
+        // TODO: Use ViaVersion to get protocol version and check if it's 1.16 or higher.
+        UUID uuid = p.getUniqueId();
+        return BedrockDeviceInfo.isOnBedrock(uuid);
     }
 }
