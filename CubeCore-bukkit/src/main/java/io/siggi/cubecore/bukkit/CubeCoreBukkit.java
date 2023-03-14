@@ -10,6 +10,7 @@ import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.util.DataAuthentication;
+import io.siggi.cubecore.util.i18n.I18n;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -82,6 +84,17 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
         DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
+
+        I18n.init(new File(getDataFolder(), "lang"));
+        I18n.registerStringifier(ItemStack.class, (locale, valueType, value) -> {
+            String count = "";
+            if (value.getAmount() != 1)
+                count = value.getAmount() + "x ";
+            return count + I18n.i18n(locale, "minecraft", NBTTool.getUtil().getTranslatableItemName(value));
+        });
+        I18n.registerStringifier(Enchantment.class, (locale, valueType, value) ->
+            I18n.i18n(locale, "minecraft", NBTTool.getUtil().getTranslatableEnchantmentName(value)));
+
         if (isBungeeCordServer()) {
             getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", CubeCoreMessengerBukkit.getListener());
             getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

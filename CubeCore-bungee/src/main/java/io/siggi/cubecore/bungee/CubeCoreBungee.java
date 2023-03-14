@@ -6,6 +6,7 @@ import io.siggi.cubecore.CubeCorePlugin;
 import io.siggi.cubecore.bedrockapi.BedrockDeviceInfo;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.util.DataAuthentication;
+import io.siggi.cubecore.util.i18n.I18n;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import java.io.File;
@@ -75,6 +76,9 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
         DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
+
+        I18n.init(new File(getDataFolder(), "lang"));
+
         EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserCache());
         getProxy().getPluginManager().registerListener(this, CubeCoreMessengerBungee.getListener());
         getProxy().getPluginManager().registerListener(this, eventListener);

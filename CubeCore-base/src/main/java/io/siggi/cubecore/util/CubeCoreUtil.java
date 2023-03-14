@@ -1,10 +1,21 @@
 package io.siggi.cubecore.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.siggi.cubecore.io.LineReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -92,5 +103,52 @@ public class CubeCoreUtil {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * Load a map from an InputStream. It auto-detects json or per-line key=value properties.
+     *
+     * @param in the InputStream to read from
+     * @return the map.
+     * @throws IOException if something goes wrong
+     */
+    public static Map<String, String> loadMap(InputStream in) throws IOException {
+        byte[] data = readFully(in);
+        try (InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(data))) {
+            JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
+            Map<String, String> map = new HashMap<>();
+            for (String key : object.keySet()) {
+                String value = object.get(key).getAsString();
+                map.put(key, value);
+            }
+            return map;
+        } catch (Exception ignored) {
+        }
+        Map<String, String> map = new HashMap<>();
+        try (LineReader lineReader = new LineReader(new ByteArrayInputStream(data))) {
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                int equalPos = line.indexOf("=");
+                if (equalPos == -1) continue;
+                String key = line.substring(0, equalPos);
+                String value = line.substring(equalPos + 1);
+                map.put(key, value);
+            }
+        }
+        return map;
+    }
+
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] b = new byte[4096];
+        int c;
+        while ((c = in.read(b,0,b.length)) != -1) {
+            out.write(b,0,c);
+        }
+    }
+
+    public static byte[] readFully(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        copy(in, out);
+        return out.toByteArray();
     }
 }
