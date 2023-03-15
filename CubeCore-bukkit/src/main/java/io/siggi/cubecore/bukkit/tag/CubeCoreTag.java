@@ -7,6 +7,19 @@ import static io.siggi.cubecore.bukkit.tag.CubeCoreTagUtil.createMaterialTag;
 
 public interface CubeCoreTag<T> {
 
+    CubeCoreTag<Material> AIR = createMaterialTag("AIR", "CAVE_AIR", "VOID_AIR");
+    CubeCoreTag<Material> WATER = createMaterialTag("WATER", "FLOWING_WATER", "STATIONARY_WATER");
+    CubeCoreTag<Material> LAVA = createMaterialTag("LAVA", "FLOWING_LAVA", "STATIONARY_LAVA");
+    CubeCoreTag<Material> NETHER_PORTAL = createMaterialTag("PORTAL", "NETHER_PORTAL");
+    CubeCoreTag<Material> END_PORTAL = createMaterialTag("ENDER_PORTAL", "END_PORTAL");
+    CubeCoreTag<Material> DAMAGING_MATERIALS = createMaterialTag(
+        "CACTUS", "CAMPFIRE", "FIRE", "MAGMA_BLOCK", "SOUL_CAMPFIRE", "SOUL_FIRE", "SWEET_BERRY_BUSH", "WITHER_ROSE"
+    );
+    CubeCoreTag<Material> HOLLOW = createMaterialTag((material) -> {
+        String name = material.name();
+        if (name.equals("PATH") || name.equals("FARMLAND")) return false;
+        return material.isTransparent() || name.equals("LIGHT");
+    });
     CubeCoreTag<Material> WOODEN_DOOR = createMaterialTag((material) -> {
         return material != Material.IRON_DOOR && material.name().endsWith("_DOOR");
     });
