@@ -55,8 +55,17 @@ public interface CubeCoreTag<T> {
         return material.name().endsWith("_WALL_SIGN")
             || material.name().equals("WALL_SIGN");
     });
+    CubeCoreTag<Material> HANGING_SIGN = createMaterialTag((material) -> {
+        return material.name().endsWith("_HANGING_SIGN");
+    });
+    CubeCoreTag<Material> WALL_HANGING_SIGN = createMaterialTag((material) -> {
+        return material.name().endsWith("_WALL_HANGING_SIGN");
+    });
+    CubeCoreTag<Material> NON_WALL_HANGING_SIGN = createMaterialTag((material) -> {
+        return material.name().endsWith("_HANGING_SIGN") && !material.name().endsWith("_WALL_HANGING_SIGN");
+    });
     CubeCoreTag<Material> SIGN_POST = createMaterialTag((material) -> {
-        return (material.name().endsWith("_SIGN") && !material.name().endsWith("_WALL_SIGN"))
+        return (material.name().endsWith("_SIGN") && !material.name().endsWith("_WALL_SIGN") && !material.name().endsWith("_HANGING_SIGN"))
             || material.name().equals("SIGN_POST");
     });
 
