@@ -57,5 +57,7 @@
         <module>nms-18R2</module>
         <module>nms-19R1</module>
         <module>nms-19R2</module>
+        <module>nms-19R3</module>
+        <module>nms-20R1</module>
     </modules>
 </project>

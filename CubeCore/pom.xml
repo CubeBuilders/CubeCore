@@ -128,6 +128,16 @@
             <artifactId>CubeCore-nms-19R2</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>CubeCore-nms-19R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>CubeCore-nms-20R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>CubeCore</finalName>

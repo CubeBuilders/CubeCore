@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.siggi</groupId>
-    <artifactId>CubeCore-bukkit</artifactId>
+    <artifactId>CubeCore-nms-19R3</artifactId>
     <version>1.0-SNAPSHOT</version>
     <parent>
         <groupId>io.siggi</groupId>
@@ -20,13 +20,13 @@
     <dependencies>
         <dependency>
             <groupId>io.siggi</groupId>
-            <artifactId>CubeCore-base</artifactId>
+            <artifactId>CubeCore-nms-base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <classifier>shaded</classifier>
             <scope>provided</scope>
             <exclusions>
@@ -36,33 +36,5 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.siggi</groupId>
-            <artifactId>CubeCore-nms-base</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>plugin.yml</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
 </project>
