@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -248,4 +250,8 @@ public abstract class NMSUtil {
      * @param z      the z coordinate of the destination
      */
     public abstract void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z);
+
+    public AuthLibProperty wrapProperty(Property property) {
+        return new AuthLibProperty(property.name(), property.value(), property.signature());
+    }
 }

@@ -1,6 +1,8 @@
 package io.siggi.cubecore.nms.v1_17_R1;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import io.siggi.cubecore.nms.AuthLibProperty;
 import io.siggi.cubecore.nms.ChatSetting;
 import io.siggi.cubecore.nms.SkinSettings;
 import java.lang.reflect.InvocationTargetException;
@@ -188,6 +190,11 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
             EntityInsentient ei = (EntityInsentient) ent;
             ei.getNavigation().a(x, y, z, 1.0D);
         }
+    }
+
+    @Override
+    public AuthLibProperty wrapProperty(Property property) {
+        return new AuthLibProperty(property.getName(), property.getValue(), property.getSignature());
     }
 
     private abstract static class PA extends EntityHuman {

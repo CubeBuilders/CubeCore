@@ -2,6 +2,7 @@ package io.siggi.cubecore.bukkit;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import io.siggi.cubecore.nms.AuthLibProperty;
 import io.siggi.cubecore.nms.NMSUtil;
 import io.siggi.cubecore.session.PlayerSession;
 import io.siggi.cubecore.usercache.UserCache;
@@ -29,8 +30,9 @@ public class EventListenerBukkit implements Listener {
         GameProfile profile = NMSUtil.get().getGameProfile(player);
         try {
             Property property = profile.getProperties().get("textures").iterator().next();
-            String value = property.getValue();
-            String signature = property.getSignature();
+            AuthLibProperty wProperty = NMSUtil.get().wrapProperty(property);
+            String value = wProperty.value();
+            String signature = wProperty.signature();
             cache.getTextures().store(player.getUniqueId(), value, signature);
         } catch (NoSuchElementException | NullPointerException e) {
         }
