@@ -79,7 +79,7 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
 
         I18n.init(new File(getDataFolder(), "lang"));
 
-        EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserCache());
+        EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserDatabase());
         getProxy().getPluginManager().registerListener(this, CubeCoreMessengerBungee.getListener());
         getProxy().getPluginManager().registerListener(this, eventListener);
 

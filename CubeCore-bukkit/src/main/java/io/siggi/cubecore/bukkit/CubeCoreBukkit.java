@@ -10,6 +10,7 @@ import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
+import io.siggi.cubecore.userinfo.UserInfo;
 import io.siggi.cubecore.util.DataAuthentication;
 import io.siggi.cubecore.util.i18n.I18n;
 import io.siggi.nbt.NBTCompound;
@@ -72,8 +73,13 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         return NBTToolBukkit.itemFromNBT(CubeCore.createBook(title, author, pages));
     }
 
+    @Deprecated
     public static ItemStack createPlayerHead(UUID player) {
         return NBTToolBukkit.itemFromNBT(CubeCore.createPlayerHead(player));
+    }
+
+    public static ItemStack createPlayerHead(UserInfo userInfo) {
+        return NBTToolBukkit.itemFromNBT(CubeCore.createPlayerHead(userInfo));
     }
 
     public static ItemStack createPlayerHead(UUID player, String name, String textures, String texturesSignature) {
@@ -105,7 +111,7 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         getCommand("unsignbook").setExecutor(commandUnsignBook);
         getCommand("unsignbook").setTabCompleter(commandUnsignBook);
 
-        EventListenerBukkit eventListener = new EventListenerBukkit(CubeCore.getUserCache());
+        EventListenerBukkit eventListener = new EventListenerBukkit(CubeCore.getUserDatabase());
         getServer().getPluginManager().registerEvents(eventListener, this);
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);

@@ -3,6 +3,8 @@ package io.siggi.cubecore;
 import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.usercache.TextureCache;
 import io.siggi.cubecore.usercache.UserCache;
+import io.siggi.cubecore.userinfo.UserDatabase;
+import io.siggi.cubecore.userinfo.UserInfo;
 import io.siggi.cubecore.util.text.FormattedText;
 import io.siggi.cubecore.util.text.TextPiece;
 import io.siggi.nbt.NBTCompound;
@@ -19,7 +21,7 @@ public class CubeCore {
     private final CubeCorePlugin plugin;
     private final File dataFolder;
     private final File userCacheDir;
-    private final UserCache userCache;
+    private UserDatabase userDatabase;
 
     public CubeCore(CubeCorePlugin plugin, File dataFolder) {
         if (instance != null) {
@@ -35,7 +37,7 @@ public class CubeCore {
         }
 
         userCacheDir = new File(dataFolder, "usercache");
-        userCache = new UserCache(userCacheDir);
+        userDatabase = new UserCache(userCacheDir);
         instance = this;
     }
 
@@ -43,8 +45,22 @@ public class CubeCore {
         return instance;
     }
 
+    public static UserDatabase getUserDatabase() {
+        return instance.userDatabase;
+    }
+
+    public static void setUserDatabase(UserDatabase db) {
+        if (db == null) throw new NullPointerException();
+        instance.userDatabase = db;
+    }
+
+    @Deprecated
     public static UserCache getUserCache() {
-        return instance.userCache;
+        UserDatabase db = instance.userDatabase;
+        if (db instanceof UserCache) {
+            return (UserCache) db;
+        }
+        throw new IllegalStateException("UserCache is not available on servers using a custom UserDatabase.");
     }
 
     public static NBTCompound createBook(String title, String author, List<? extends BaseComponent> pages) {
@@ -70,6 +86,7 @@ public class CubeCore {
         return book;
     }
 
+    @Deprecated
     public static NBTCompound createPlayerHead(UUID player) {
         if (player == null)
             return createPlayerHead(null, null, null, null);
@@ -83,6 +100,13 @@ public class CubeCore {
             signature = entry.getSignature();
         }
         return createPlayerHead(player, name, payload, signature);
+    }
+
+    public static NBTCompound createPlayerHead(UserInfo userInfo) {
+        if (userInfo == null) {
+            return createPlayerHead(null, null, null, null);
+        }
+        return createPlayerHead(userInfo.getUUID(), userInfo.getUsername(), userInfo.getTexturesPayload(), userInfo.getTexturesSignature());
     }
 
     public static NBTCompound createPlayerHead(UUID player, String name, String textures, String texturesSignature) {
