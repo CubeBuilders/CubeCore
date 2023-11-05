@@ -22,6 +22,9 @@ public class CubeCore {
     private final UserCache userCache;
 
     public CubeCore(CubeCorePlugin plugin, File dataFolder) {
+        if (instance != null) {
+            throw new IllegalStateException("CubeCore has already been instantiated");
+        }
         if (plugin == null || dataFolder == null)
             throw new NullPointerException();
         this.plugin = plugin;
@@ -31,9 +34,6 @@ public class CubeCore {
             dataFolder.mkdirs();
         }
 
-        if (instance != null) {
-            throw new IllegalStateException("CubeCore has already been instantiated");
-        }
         userCacheDir = new File(dataFolder, "usercache");
         userCache = new UserCache(userCacheDir);
         instance = this;
