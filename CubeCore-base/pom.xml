@@ -46,5 +46,15 @@
             <artifactId>AnvilRegionFormat</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>SiggiHTTP</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>SimpleWebsocket</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
