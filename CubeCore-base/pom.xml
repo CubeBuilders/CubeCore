@@ -31,11 +31,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.siggi</groupId>
-            <artifactId>leveldb</artifactId>
-            <version>0.12</version>
-        </dependency>
-        <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-chat</artifactId>
             <version>1.16-R0.4</version>
