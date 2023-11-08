@@ -51,5 +51,17 @@
             <artifactId>SimpleWebsocket</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>SimpleJWT</artifactId>
+            <version>1.1</version>
+            <exclusions>
+                <!-- Bukkit and BungeeCord both already include Gson -->
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 </project>
