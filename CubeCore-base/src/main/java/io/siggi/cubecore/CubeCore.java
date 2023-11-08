@@ -12,6 +12,7 @@ import io.siggi.nbt.NBTList;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -51,6 +52,10 @@ public class CubeCore {
 
     public static CubeCore getInstance() {
         return instance;
+    }
+
+    public static Logger getLogger() {
+        return instance.plugin.getLogger();
     }
 
     public static UserDatabase getUserDatabase() {
