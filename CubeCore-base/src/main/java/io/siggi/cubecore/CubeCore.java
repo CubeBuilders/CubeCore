@@ -1,6 +1,9 @@
 package io.siggi.cubecore;
 
 import com.google.gson.GsonBuilder;
+import io.siggi.cubecore.apiserver.ApiServer;
+import io.siggi.cubecore.apiserver.ApiServerImpl;
+import io.siggi.cubecore.apiserver.ApiServerStartException;
 import io.siggi.cubecore.usercache.TextureCache;
 import io.siggi.cubecore.usercache.UserCache;
 import io.siggi.cubecore.userinfo.UserDatabase;
@@ -12,7 +15,9 @@ import io.siggi.nbt.NBTList;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -24,6 +29,7 @@ public class CubeCore {
     private final File userCacheDir;
     private UserDatabase userDatabase;
     private boolean started = false;
+    private ApiServer apiServer;
 
     public CubeCore(CubeCorePlugin plugin, File dataFolder) {
         if (instance != null) {
@@ -40,14 +46,34 @@ public class CubeCore {
 
         userCacheDir = new File(dataFolder, "usercache");
         userDatabase = new UserCache(userCacheDir);
+
+        File apiServerConfig = new File(dataFolder, "apiserver.txt");
+        if (apiServerConfig.exists()) {
+            try {
+                apiServer = new ApiServerImpl(apiServerConfig, new File(dataFolder, "apiserver-sessions"));
+            } catch (ApiServerStartException e) {
+                getLogger().log(Level.SEVERE, e, () -> "Unable to initialize ApiServer");
+            }
+        }
+
         instance = this;
     }
 
     public void pluginEnabled() {
         started = true;
+        if (apiServer != null) {
+            try {
+                apiServer.start();
+            } catch (ApiServerStartException e) {
+                getLogger().log(Level.SEVERE, e, () -> "Unable to start ApiServer");
+            }
+        }
     }
 
     public void pluginDisabled() {
+        if (apiServer != null) {
+            apiServer.close();
+        }
     }
 
     public static CubeCore getInstance() {
@@ -56,6 +82,17 @@ public class CubeCore {
 
     public static Logger getLogger() {
         return instance.plugin.getLogger();
+    }
+
+    public static ApiServer getApiServer() {
+        return instance.apiServer;
+    }
+
+    public static void setApiServer(ApiServer apiServer) {
+        if (instance.started) {
+            throw new IllegalStateException("Cannot set ApiServer after plugin has been enabled.");
+        }
+        instance.apiServer = apiServer;
     }
 
     public static UserDatabase getUserDatabase() {
