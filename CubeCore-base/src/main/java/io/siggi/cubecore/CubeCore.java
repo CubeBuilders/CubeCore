@@ -37,6 +37,7 @@ public class CubeCore {
         }
         if (plugin == null || dataFolder == null)
             throw new NullPointerException();
+        instance = this;
         this.plugin = plugin;
         this.dataFolder = dataFolder;
 
@@ -55,8 +56,6 @@ public class CubeCore {
                 getLogger().log(Level.SEVERE, e, () -> "Unable to initialize ApiServer");
             }
         }
-
-        instance = this;
     }
 
     public void pluginEnabled() {
