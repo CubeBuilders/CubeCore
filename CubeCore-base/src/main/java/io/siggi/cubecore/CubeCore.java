@@ -22,6 +22,7 @@ public class CubeCore {
     private final File dataFolder;
     private final File userCacheDir;
     private UserDatabase userDatabase;
+    private boolean started = false;
 
     public CubeCore(CubeCorePlugin plugin, File dataFolder) {
         if (instance != null) {
@@ -39,6 +40,13 @@ public class CubeCore {
         userCacheDir = new File(dataFolder, "usercache");
         userDatabase = new UserCache(userCacheDir);
         instance = this;
+    }
+
+    public void pluginEnabled() {
+        started = true;
+    }
+
+    public void pluginDisabled() {
     }
 
     public static CubeCore getInstance() {

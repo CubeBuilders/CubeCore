@@ -87,11 +87,15 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
     }
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
         DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
+    }
 
+    @Override
+    public void onEnable() {
+        cubeCore.pluginEnabled();
         I18n.init(new File(getDataFolder(), "lang"));
         I18n.registerStringifier(ItemStack.class, (locale, valueType, value) -> {
             String count = "";
@@ -136,6 +140,11 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         CubeCoreMessengerBukkit.setHandler("cubecore:refreshCommands", (p, subChannel, in) -> {
             p.updateCommands();
         });
+    }
+
+    @Override
+    public void onDisable() {
+        cubeCore.pluginDisabled();
     }
 
     /**

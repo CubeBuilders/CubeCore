@@ -72,11 +72,15 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
     }
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         instance = this;
         this.cubeCore = new CubeCore(this, getDataFolder());
         DataAuthentication.setupSalt(new File(getDataFolder(), "salt.txt"));
+    }
 
+    @Override
+    public void onEnable() {
+        cubeCore.pluginEnabled();
         I18n.init(new File(getDataFolder(), "lang"));
 
         EventListenerBungee eventListener = new EventListenerBungee(CubeCore.getUserDatabase());
@@ -89,6 +93,11 @@ public class CubeCoreBungee extends Plugin implements CubeCorePlugin {
         CubeCoreMessengerBungee.setHandler("cubecore:chatAsPlayer", (p, subChannel, in) -> {
             chatAsPlayer(p, in.readUTF());
         });
+    }
+
+    @Override
+    public void onDisable() {
+        cubeCore.pluginDisabled();
     }
 
     /**
