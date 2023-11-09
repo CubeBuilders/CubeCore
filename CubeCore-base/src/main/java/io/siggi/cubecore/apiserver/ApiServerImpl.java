@@ -169,6 +169,20 @@ public final class ApiServerImpl implements ApiServer {
     }
 
     @Override
+    public void mountPath(String path, File directory) {
+        if (path == null || directory == null) throw new NullPointerException();
+        String prefix = path.endsWith("/") ? path : (path + "/");
+        addHandler(path, (request, context) -> {
+            if (!request.url.startsWith(prefix)) return;
+            String subPath = request.url.substring(prefix.length());
+            if (subPath.contains("/../") || subPath.startsWith("../") || subPath.endsWith("/..")) return;
+            File file = new File(directory, subPath);
+            if (!file.isFile()) return;
+            request.response.returnFile(file);
+        });
+    }
+
+    @Override
     public JWTAlgorithm getJWTAlgorithm() {
         return jwtAlgorithm;
     }

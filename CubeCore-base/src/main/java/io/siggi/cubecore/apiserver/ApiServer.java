@@ -2,6 +2,8 @@ package io.siggi.cubecore.apiserver;
 
 import io.siggi.simplejwt.alg.JWTAlgorithm;
 
+import java.io.File;
+
 public interface ApiServer {
     void start() throws ApiServerStartException;
 
@@ -14,6 +16,14 @@ public interface ApiServer {
      * @param handler the handler for the path and its subdirectories
      */
     void addHandler(String path, ApiHandler handler);
+
+    /**
+     * Mount a path to serve files on this API server.
+     *
+     * @param path      the path to mount a directory at
+     * @param directory the directory to mount
+     */
+    void mountPath(String path, File directory);
 
     /**
      * Get the JWT algorithm and key used by this API server.
