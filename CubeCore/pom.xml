@@ -198,6 +198,20 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>**/module-info.class</exclude>
+                                <exclude>**/*.java</exclude>
+                                <exclude>**/*.SF</exclude>
+                                <exclude>**/*.DSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
             </plugin>
         </plugins>
     </build>
