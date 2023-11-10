@@ -48,7 +48,7 @@ public class CubeCore {
         userCacheDir = new File(dataFolder, "usercache");
         userDatabase = new UserCache(userCacheDir);
 
-        File apiServerConfig = new File(dataFolder, "apiserver.txt");
+        File apiServerConfig = new File(dataFolder, "apiserver.json");
         if (apiServerConfig.exists()) {
             try {
                 apiServer = new ApiServerImpl(apiServerConfig, new File(dataFolder, "apiserver-sessions"));

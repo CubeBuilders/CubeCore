@@ -1,5 +1,6 @@
 package io.siggi.cubecore.apiserver;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.siggi.cubecore.util.CubeCoreUtil;
 import io.siggi.http.HTTPRequest;
@@ -22,9 +23,9 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public final class ApiServerImpl implements ApiServer {
+    private static final Gson gson = new Gson();
     private final JWTAlgorithm jwtAlgorithm;
     private final File sessionsDirectory;
     private HTTPServer httpServer;
@@ -40,34 +41,30 @@ public final class ApiServerImpl implements ApiServer {
         this(readConfigFile(configFile), sessionsDirectory);
     }
 
-    private static Properties readConfigFile(File configFile) throws ApiServerStartException {
-        try {
-            Properties props = new Properties();
-            try (FileReader reader = new FileReader(configFile)) {
-                props.load(reader);
-            }
-            return props;
+    private static ApiServerConfig readConfigFile(File configFile) throws ApiServerStartException {
+        try (FileReader reader = new FileReader(configFile)) {
+            return gson.fromJson(reader, ApiServerConfig.class);
         } catch (IOException e) {
             throw new ApiServerStartException(e);
         }
     }
 
-    public ApiServerImpl(Properties props, File sessionsDirectory) throws ApiServerStartException {
+    public ApiServerImpl(ApiServerConfig config, File sessionsDirectory) throws ApiServerStartException {
         try {
             this.sessionsDirectory = sessionsDirectory;
-            localIp = props.getProperty("listen-ip", "0.0.0.0");
-            port = Integer.parseInt(props.getProperty("listen-port", "2823"));
-            String publicEndpoint = props.getProperty("public-endpoint");
+            localIp = config.localIp;
+            port = config.port;
+            String publicEndpoint = config.publicEndpoint;
             if (publicEndpoint != null && publicEndpoint.endsWith("/")) publicEndpoint = publicEndpoint.substring(0, publicEndpoint.length()-1);
             this.publicEndpoint = publicEndpoint;
-            String jwtAlgorithm = props.getProperty("jwt-algorithm");
+            String jwtAlgorithm = config.jwtAlgorithm;
             if (jwtAlgorithm != null) {
                 Class<? extends JWTAlgorithm> algClass = (Class<? extends JWTAlgorithm>) Class.forName("io.siggi.simplejwt.alg." + (jwtAlgorithm.toUpperCase()));
-                byte[] jwtKey = CubeCoreUtil.hexToBytes(props.getProperty("jwt-key"));
+                byte[] jwtKey = CubeCoreUtil.hexToBytes(config.jwtKey);
                 if (RS.class.isAssignableFrom(algClass)) {
                     PrivateKey privateKey = null;
                     PublicKey publicKey = RSAKeyManager.loadPublic(jwtKey);
-                    String jwtPrivateString = props.getProperty("jwt-private");
+                    String jwtPrivateString = config.jwtPrivateKey;
                     if (jwtPrivateString != null) {
                         byte[] jwtPrivate = CubeCoreUtil.hexToBytes(jwtPrivateString);
                         privateKey = RSAKeyManager.loadPrivate(jwtPrivate);
@@ -80,6 +77,9 @@ public final class ApiServerImpl implements ApiServer {
                 }
             } else {
                 this.jwtAlgorithm = null;
+            }
+            for (ApiServerConfig.MountPoint mountPoint : config.mountPoints) {
+                mountPath(mountPoint.mountPoint, new File(mountPoint.path));
             }
         } catch (ReflectiveOperationException | InvalidKeySpecException e) {
             throw new ApiServerStartException(e);
