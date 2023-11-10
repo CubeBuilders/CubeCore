@@ -51,7 +51,7 @@ public class CubeCore {
         File apiServerConfig = new File(dataFolder, "apiserver.json");
         if (apiServerConfig.exists()) {
             try {
-                apiServer = new ApiServerImpl(apiServerConfig, new File(dataFolder, "apiserver-sessions"));
+                apiServer = new ApiServerImpl(apiServerConfig, new File(dataFolder, "websessions"));
             } catch (ApiServerStartException e) {
                 getLogger().log(Level.SEVERE, e, () -> "Unable to initialize ApiServer");
             }
