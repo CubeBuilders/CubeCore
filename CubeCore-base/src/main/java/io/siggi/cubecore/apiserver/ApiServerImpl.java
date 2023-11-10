@@ -177,7 +177,20 @@ public final class ApiServerImpl implements ApiServer {
             String subPath = request.url.substring(prefix.length());
             if (subPath.contains("/../") || subPath.startsWith("../") || subPath.endsWith("/..")) return;
             File file = new File(directory, subPath);
-            if (!file.isFile()) return;
+            if (!file.isFile()) {
+                if (file.isDirectory()) {
+                    File indexFile = new File(file, "index.html");
+                    if (indexFile.isFile()) {
+                        if (!request.url.endsWith("/")) {
+                            request.response.redirect(request.url + "/");
+                            return;
+                        }
+                        file = indexFile;
+                    }
+                } else {
+                    return;
+                }
+            }
             request.response.returnFile(file);
         });
     }
