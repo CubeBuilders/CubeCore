@@ -52,7 +52,7 @@ public final class ApiServerImpl implements ApiServer {
     public ApiServerImpl(ApiServerConfig config, File sessionsDirectory) throws ApiServerStartException {
         try {
             this.sessionsDirectory = sessionsDirectory;
-            localIp = config.localIp;
+            localIp = config.localIp == null ? "0.0.0.0" : config.localIp;
             port = config.port;
             String publicEndpoint = config.publicEndpoint;
             if (publicEndpoint != null && publicEndpoint.endsWith("/")) publicEndpoint = publicEndpoint.substring(0, publicEndpoint.length()-1);
