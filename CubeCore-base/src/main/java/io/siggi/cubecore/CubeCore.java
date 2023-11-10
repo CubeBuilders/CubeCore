@@ -13,11 +13,15 @@ import io.siggi.cubecore.util.text.TextPiece;
 import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTList;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import io.siggi.reflectionfreedom.ReflectionFreedom;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -200,5 +204,38 @@ public class CubeCore {
         builder.registerTypeAdapter(TextPiece.class, TextPiece.typeAdapter);
         builder.registerTypeAdapter(ChatColor.class, TextPiece.chatColorTypeAdapter);
         return builder;
+    }
+
+    private static Field allowedMethodsField = null;
+
+    public static void forceAllowMethod(String method) {
+        if (allowedMethodsField == null) {
+            if (!ReflectionFreedom.isSupported()) {
+                throw new UnsupportedOperationException();
+            }
+            try {
+                Field field = HttpURLConnection.class.getDeclaredField("methods");
+                ReflectionFreedom.setAccessible(field, true);
+                ReflectionFreedom.setModifiers(field, field.getModifiers() & ~Modifier.FINAL);
+                allowedMethodsField = field;
+            } catch (Exception e) {
+                throw new UnsupportedOperationException();
+            }
+        }
+        if (method == null) {
+            throw new NullPointerException();
+        }
+        try {
+            String[] methods = (String[]) allowedMethodsField.get(null);
+            for (String m : methods) {
+                if (m.equals(method)) return;
+            }
+            String[] newMethods = new String[methods.length + 1];
+            System.arraycopy(methods, 0, newMethods, 0, methods.length);
+            newMethods[newMethods.length - 1] = method;
+            allowedMethodsField.set(null, newMethods);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
