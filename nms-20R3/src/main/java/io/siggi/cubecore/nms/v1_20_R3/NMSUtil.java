@@ -102,7 +102,7 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
             return;
         }
         CraftPlayer cp = (CraftPlayer) p;
-        cp.getHandle().c.a((Packet<?>) packet);
+        cp.getHandle().c.b((Packet<?>) packet);
     }
 
     @Override
