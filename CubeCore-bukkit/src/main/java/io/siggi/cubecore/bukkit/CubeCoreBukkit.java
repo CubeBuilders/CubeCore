@@ -8,6 +8,8 @@ import io.siggi.cubecore.bukkit.actionitem.ActionItems;
 import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
+import io.siggi.cubecore.bukkit.location.ExactLocation;
+import io.siggi.cubecore.bukkit.location.WorldID;
 import io.siggi.cubecore.bukkit.location.WorldProviders;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.userinfo.UserInfo;
@@ -153,6 +155,8 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
+        builder.registerTypeAdapter(ExactLocation.class, ExactLocation.typeAdapter);
+        builder.registerTypeAdapter(WorldID.class, WorldID.typeAdapter);
     }
 
     public static boolean shouldUseFallbackColors(Player p) {
