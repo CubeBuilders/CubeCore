@@ -21,8 +21,10 @@ import io.siggi.nbt.NBTCompound;
 import io.siggi.nbt.NBTTool;
 import io.siggi.nbt.NBTToolBukkit;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -144,12 +146,19 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         CubeCoreMessengerBukkit.setHandler("cubecore:refreshCommands", (p, subChannel, in) -> {
             p.updateCommands();
         });
+
+        try {
+            typeAdapterAdders.add(NBTTool::registerTo);
+        } catch (LinkageError ignored) {
+        }
     }
 
     @Override
     public void onDisable() {
         cubeCore.pluginDisabled();
     }
+
+    private final List<Consumer<GsonBuilder>> typeAdapterAdders = new ArrayList<>();
 
     /**
      * Do not call this method. Use {@link CubeCore#registerTypeAdapters(GsonBuilder)} instead.
@@ -161,6 +170,9 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         builder.registerTypeAdapter(CuboidRegion.class, CuboidRegion.typeAdapter);
         builder.registerTypeAdapter(ExactLocation.class, ExactLocation.typeAdapter);
         builder.registerTypeAdapter(WorldID.class, WorldID.typeAdapter);
+        for (Consumer<GsonBuilder> typeAdapterAdder : typeAdapterAdders) {
+            typeAdapterAdder.accept(builder);
+        }
     }
 
     public static boolean shouldUseFallbackColors(Player p) {
