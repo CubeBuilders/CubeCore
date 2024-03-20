@@ -9,6 +9,8 @@ import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
 import io.siggi.cubecore.bukkit.location.BlockLocation;
 import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
+import io.siggi.cubecore.bukkit.location.set.BitMapBlockSet;
+import io.siggi.cubecore.bukkit.location.set.BlockSet;
 import io.siggi.cubecore.bukkit.location.set.CuboidBlockSet;
 import io.siggi.cubecore.bukkit.location.ExactLocation;
 import io.siggi.cubecore.bukkit.location.WorldID;
@@ -166,9 +168,13 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
     public void registerTypeAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(BlockLocation.class, BlockLocation.typeAdapter);
         builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
-        builder.registerTypeAdapter(CuboidBlockSet.class, CuboidBlockSet.typeAdapter);
         builder.registerTypeAdapter(ExactLocation.class, ExactLocation.typeAdapter);
         builder.registerTypeAdapter(WorldID.class, WorldID.typeAdapter);
+
+        builder.registerTypeAdapter(BlockSet.class, BlockSet.typeAdapter);
+        builder.registerTypeAdapter(BitMapBlockSet.class, BitMapBlockSet.typeAdapter);
+        builder.registerTypeAdapter(CuboidBlockSet.class, CuboidBlockSet.typeAdapter);
+
         for (Consumer<GsonBuilder> typeAdapterAdder : typeAdapterAdders) {
             typeAdapterAdder.accept(builder);
         }
