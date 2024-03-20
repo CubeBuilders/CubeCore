@@ -12,10 +12,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public final class CuboidRegion implements BlockSet {
-    public static final TypeAdapter<CuboidRegion> typeAdapter = new TypeAdapter<CuboidRegion>() {
+public final class CuboidBlockSet implements BlockSet {
+    public static final TypeAdapter<CuboidBlockSet> typeAdapter = new TypeAdapter<CuboidBlockSet>() {
         @Override
-        public CuboidRegion read(JsonReader reader) throws IOException {
+        public CuboidBlockSet read(JsonReader reader) throws IOException {
             BlockLocation from = null;
             BlockLocation to = null;
             reader.beginObject();
@@ -33,16 +33,16 @@ public final class CuboidRegion implements BlockSet {
                 }
             }
             reader.endObject();
-            return new CuboidRegion(from, to);
+            return new CuboidBlockSet(from, to);
         }
 
         @Override
-        public void write(JsonWriter writer, CuboidRegion region) throws IOException {
+        public void write(JsonWriter writer, CuboidBlockSet set) throws IOException {
             writer.beginObject();
             writer.name("from");
-            BlockLocation.typeAdapter.write(writer, region.from);
+            BlockLocation.typeAdapter.write(writer, set.from);
             writer.name("to");
-            BlockLocation.typeAdapter.write(writer, region.to);
+            BlockLocation.typeAdapter.write(writer, set.to);
             writer.endObject();
         }
     };
@@ -50,7 +50,7 @@ public final class CuboidRegion implements BlockSet {
     private final BlockLocation from;
     private final BlockLocation to;
 
-    public CuboidRegion(BlockLocation from, BlockLocation to) {
+    public CuboidBlockSet(BlockLocation from, BlockLocation to) {
         if (from == null || to == null) throw new NullPointerException();
         if (from.getX() <= to.getX()
                 && from.getY() <= to.getY()
@@ -106,8 +106,8 @@ public final class CuboidRegion implements BlockSet {
 
     public boolean equals(Object other) {
         if (other == this) return true;
-        if (!(other instanceof CuboidRegion)) return false;
-        CuboidRegion o = (CuboidRegion) other;
+        if (!(other instanceof CuboidBlockSet)) return false;
+        CuboidBlockSet o = (CuboidBlockSet) other;
         return from.equals(o.from) && to.equals(o.to);
     }
 
