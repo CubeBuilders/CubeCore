@@ -10,8 +10,9 @@ import io.siggi.cubecore.util.SimpleIterator;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
-public class CuboidRegion implements BlockSet {
+public final class CuboidRegion implements BlockSet {
     public static final TypeAdapter<CuboidRegion> typeAdapter = new TypeAdapter<CuboidRegion>() {
         @Override
         public CuboidRegion read(JsonReader reader) throws IOException {
@@ -101,5 +102,17 @@ public class CuboidRegion implements BlockSet {
                 return new BlockLocation(x, y, z);
             }
         };
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof CuboidRegion)) return false;
+        CuboidRegion o = (CuboidRegion) other;
+        return from.equals(o.from) && to.equals(o.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to);
     }
 }
