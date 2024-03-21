@@ -5,6 +5,9 @@ import com.google.gson.JsonParser;
 import io.siggi.cubecore.io.LineReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +23,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+
+import static io.siggi.cubecore.util.OS.CURRENT_OS;
 
 public class CubeCoreUtil {
     private CubeCoreUtil() {
@@ -150,5 +155,61 @@ public class CubeCoreUtil {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         copy(in, out);
         return out.toByteArray();
+    }
+
+    public static void clone(File from, File to) throws IOException {
+        Process process;
+        switch (CURRENT_OS) {
+            case MACOS: {
+                process = Runtime.getRuntime().exec(new String[]{
+                        "cp",
+                        "-c",
+                        "-r",
+                        from.getAbsolutePath(),
+                        to.getAbsolutePath()
+                });
+            }
+            break;
+            case LINUX: {
+                process = Runtime.getRuntime().exec(new String[]{
+                        "cp",
+                        "--reflink=auto",
+                        "-r",
+                        from.getAbsolutePath(),
+                        to.getAbsolutePath()
+                });
+            }
+            break;
+            default: {
+                copy(from, to);
+                return;
+            }
+        }
+        try {
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new IOException("Clone failed, nonzero exit code " + exitCode);
+            }
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        }
+    }
+
+    private static void copy(File from, File to) throws IOException {
+        if (from.isFile()) {
+            copyFile(from, to);
+        } else if (from.isDirectory()) {
+            to.mkdirs();
+            for (File file : from.listFiles()) {
+                copy(file, new File(to, file.getName()));
+            }
+        }
+    }
+
+    private static void copyFile(File from, File to) throws IOException {
+        try (FileInputStream in = new FileInputStream(from);
+             FileOutputStream out = new FileOutputStream(to)) {
+            copy(in, out);
+        }
     }
 }
