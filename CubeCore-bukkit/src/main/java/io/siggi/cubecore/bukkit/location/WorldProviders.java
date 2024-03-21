@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -29,6 +30,11 @@ public class WorldProviders {
         providers.add(provider);
     }
 
+    /**
+     * Determine if the world for this location can be loaded.
+     *
+     * @return true if the world can be loaded, false otherwise.
+     */
     public static boolean isWorldLoadable(WorldID worldId) {
         if (Bukkit.getWorld(worldId.getUid()) != null || Bukkit.getWorld(worldId.getName()) != null) return true;
         for (WorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
@@ -43,6 +49,19 @@ public class WorldProviders {
     }
 
     public static World loadWorld(WorldID worldId) {
+        String name = worldId.getName();
+        UUID uid = worldId.getUid();
+
+        if (name != null) {
+            World world = Bukkit.getWorld(name);
+            if (world != null) return world;
+        }
+
+        if (uid != null) {
+            World world = Bukkit.getWorld(uid);
+            if (world != null) return world;
+        }
+
         for (WorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
             try {
                 World world = provider.loadWorld(worldId);

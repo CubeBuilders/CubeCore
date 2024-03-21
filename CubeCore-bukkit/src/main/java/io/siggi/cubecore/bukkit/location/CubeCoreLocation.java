@@ -7,8 +7,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 public final class CubeCoreLocation {
     public static final TypeAdapter<CubeCoreLocation> typeAdapter = new TypeAdapter<CubeCoreLocation>() {
@@ -59,20 +57,6 @@ public final class CubeCoreLocation {
         this.location = location;
     }
 
-    public static CubeCoreLocation fromBukkitLocation(Location location) {
-        World world = location.getWorld();
-        if (world == null) throw new NullPointerException("The world is not set in the passed bukkit location.");
-        return new CubeCoreLocation(
-                new WorldID(
-                        world.getName(), world.getUID()
-                ),
-                new ExactLocation(
-                        location.getX(), location.getY(), location.getZ(),
-                        location.getPitch(), location.getYaw()
-                )
-        );
-    }
-
     public WorldID getWorld() {
         return world;
     }
@@ -107,32 +91,6 @@ public final class CubeCoreLocation {
 
     public float getYaw() {
         return location.getYaw();
-    }
-
-    /**
-     * Determine if the world for this location can be loaded.
-     *
-     * @return true if the world can be loaded, false otherwise.
-     */
-    public boolean isWorldLoadable() {
-        return world.isWorldLoadable();
-    }
-
-    /**
-     * Convert this CubeCoreLocation to a Bukkit Location, loading the world if needed. Do not call this method if you
-     * don't want to load a world that is currently unloaded.
-     *
-     * @return the Bukkit Location.
-     */
-    public Location toBukkitLocation() {
-        World world = this.world.getWorld();
-        if (world == null)
-            return null;
-        return new Location(
-                world,
-                location.getX(), location.getY(), location.getZ(),
-                location.getYaw(), location.getPitch()
-        );
     }
 
     public boolean equals(Object other) {

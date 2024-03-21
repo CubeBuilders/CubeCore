@@ -5,8 +5,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import io.siggi.cubecore.util.CubeCoreUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -60,29 +58,6 @@ public final class WorldID {
 
     public UUID getUid() {
         return uid;
-    }
-
-    World getWorld() {
-        if (name != null) {
-            World world = Bukkit.getWorld(name);
-            if (world != null) return world;
-        }
-
-        if (uid != null) {
-            World world = Bukkit.getWorld(uid);
-            if (world != null) return world;
-        }
-
-        return WorldProviders.loadWorld(this);
-    }
-
-    /**
-     * Determine if the world for this location can be loaded.
-     *
-     * @return true if the world can be loaded, false otherwise.
-     */
-    public boolean isWorldLoadable() {
-        return WorldProviders.isWorldLoadable(this);
     }
 
     @Override
