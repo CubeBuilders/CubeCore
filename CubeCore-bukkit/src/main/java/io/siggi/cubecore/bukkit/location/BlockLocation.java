@@ -4,8 +4,6 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -67,10 +65,6 @@ public final class BlockLocation {
 
     public int getZ() {
         return z;
-    }
-
-    public Block inWorld(World world) {
-        return world.getBlockAt(x, y, z);
     }
 
     @Override
