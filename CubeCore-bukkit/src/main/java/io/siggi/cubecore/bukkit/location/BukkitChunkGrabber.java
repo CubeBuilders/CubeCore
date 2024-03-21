@@ -5,10 +5,10 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
-public final class ChunkGrabber {
-    private static ChunkGrabber.ChunkGrabberAbstract implementation = new ChunkGrabber.ChunkGrabberDefaultImplementation();
+public final class BukkitChunkGrabber {
+    private static BukkitChunkGrabber.ChunkGrabberAbstract implementation = new BukkitChunkGrabber.ChunkGrabberDefaultImplementation();
 
-    public static void setImplementation(ChunkGrabber.ChunkGrabberAbstract impl) {
+    public static void setImplementation(BukkitChunkGrabber.ChunkGrabberAbstract impl) {
         if (impl == null) throw new NullPointerException();
         implementation = impl;
     }
@@ -18,12 +18,12 @@ public final class ChunkGrabber {
         return implementation.grab(world, x, z, urgently);
     }
 
-    public static CompletableFuture<GrabbedChunks> grab(Collection<CubeCoreChunk> chunks, boolean urgently) {
-        GrabbedChunks grabbedChunks = new GrabbedChunks();
-        CompletableFuture<GrabbedChunks> result = new CompletableFuture<>();
+    public static CompletableFuture<BukkitGrabbedChunks> grab(Collection<BukkitChunk> chunks, boolean urgently) {
+        BukkitGrabbedChunks grabbedChunks = new BukkitGrabbedChunks();
+        CompletableFuture<BukkitGrabbedChunks> result = new CompletableFuture<>();
         CompletableFuture<?>[] futuresArray = new CompletableFuture[chunks.size()];
         int i = 0;
-        for (CubeCoreChunk coreChunk : chunks) {
+        for (BukkitChunk coreChunk : chunks) {
             futuresArray[i++] = grab(coreChunk.getWorld(), coreChunk.getX(), coreChunk.getZ(), urgently).thenAccept(grabbedChunks::add);
         }
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futuresArray);
@@ -42,7 +42,7 @@ public final class ChunkGrabber {
         CompletableFuture<Chunk> grab(World world, int x, int z, boolean urgently);
     }
 
-    private static class ChunkGrabberDefaultImplementation implements ChunkGrabber.ChunkGrabberAbstract {
+    private static class ChunkGrabberDefaultImplementation implements BukkitChunkGrabber.ChunkGrabberAbstract {
         @Override
         public CompletableFuture<Chunk> grab(World world, int x, int z, boolean urgently) {
             try {

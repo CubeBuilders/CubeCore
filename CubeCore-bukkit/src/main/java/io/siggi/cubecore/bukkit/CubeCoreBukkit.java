@@ -7,14 +7,7 @@ import io.siggi.cubecore.bedrockapi.BedrockDeviceInfo;
 import io.siggi.cubecore.bukkit.actionitem.ActionItems;
 import io.siggi.cubecore.bukkit.commands.CommandUnsignBook;
 import io.siggi.cubecore.bukkit.item.CanonicalItems;
-import io.siggi.cubecore.bukkit.location.BlockLocation;
-import io.siggi.cubecore.bukkit.location.CubeCoreLocation;
-import io.siggi.cubecore.bukkit.location.set.BitMapBlockSet;
-import io.siggi.cubecore.bukkit.location.set.BlockSet;
-import io.siggi.cubecore.bukkit.location.set.CuboidBlockSet;
-import io.siggi.cubecore.bukkit.location.ExactLocation;
-import io.siggi.cubecore.bukkit.location.WorldID;
-import io.siggi.cubecore.bukkit.location.WorldProviders;
+import io.siggi.cubecore.bukkit.location.BukkitWorldProviders;
 import io.siggi.cubecore.pluginmessage.OutboundPluginMessageBuilder;
 import io.siggi.cubecore.userinfo.UserInfo;
 import io.siggi.cubecore.util.DataAuthentication;
@@ -126,7 +119,7 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
         getServer().getPluginManager().registerEvents(eventListener, this);
         for (Listener listener : CanonicalItems.getListeners())
             getServer().getPluginManager().registerEvents(listener, this);
-        getServer().getPluginManager().registerEvents(WorldProviders.getListener(), this);
+        getServer().getPluginManager().registerEvents(BukkitWorldProviders.getListener(), this);
         getServer().getPluginManager().registerEvents(ActionItems.getListener(), this);
 
         BrandReceiverBukkit brandReceiverBukkit = new BrandReceiverBukkit();
@@ -166,15 +159,6 @@ public class CubeCoreBukkit extends JavaPlugin implements CubeCorePlugin {
      */
     @Override
     public void registerTypeAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(BlockLocation.class, BlockLocation.typeAdapter);
-        builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
-        builder.registerTypeAdapter(ExactLocation.class, ExactLocation.typeAdapter);
-        builder.registerTypeAdapter(WorldID.class, WorldID.typeAdapter);
-
-        builder.registerTypeAdapter(BlockSet.class, BlockSet.typeAdapter);
-        builder.registerTypeAdapter(BitMapBlockSet.class, BitMapBlockSet.typeAdapter);
-        builder.registerTypeAdapter(CuboidBlockSet.class, CuboidBlockSet.typeAdapter);
-
         for (Consumer<GsonBuilder> typeAdapterAdder : typeAdapterAdders) {
             typeAdapterAdder.accept(builder);
         }

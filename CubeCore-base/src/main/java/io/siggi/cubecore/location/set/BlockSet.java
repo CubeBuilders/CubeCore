@@ -1,9 +1,9 @@
-package io.siggi.cubecore.bukkit.location.set;
+package io.siggi.cubecore.location.set;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.siggi.cubecore.bukkit.location.BlockLocation;
+import io.siggi.cubecore.location.BlockLocation;
 
 import java.io.IOException;
 

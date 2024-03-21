@@ -1,6 +1,6 @@
-package io.siggi.cubecore.bukkit.location.set;
+package io.siggi.cubecore.location.set;
 
-import io.siggi.cubecore.bukkit.location.BlockLocation;
+import io.siggi.cubecore.location.BlockLocation;
 
 import java.util.HashSet;
 import java.util.Set;

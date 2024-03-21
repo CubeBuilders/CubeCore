@@ -10,7 +10,7 @@ import java.util.Set;
 import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 
-public final class GrabbedChunks implements Closeable {
+public final class BukkitGrabbedChunks implements Closeable {
     private static final boolean useTickets;
 
     static {
@@ -23,12 +23,12 @@ public final class GrabbedChunks implements Closeable {
         useTickets = uT;
     }
 
-    private static final Map<Chunk, Set<GrabbedChunks>> currentlyGrabbed = new HashMap<>();
+    private static final Map<Chunk, Set<BukkitGrabbedChunks>> currentlyGrabbed = new HashMap<>();
     private final Set<Chunk> chunks = new HashSet<>();
     private final Set<Chunk> immutableChunks = Collections.unmodifiableSet(chunks);
     private boolean closed = false;
 
-    GrabbedChunks() {
+    BukkitGrabbedChunks() {
     }
 
     public Set<Chunk> getChunks() {
@@ -38,7 +38,7 @@ public final class GrabbedChunks implements Closeable {
     void add(Chunk chunk) {
         if (closed) return;
         chunks.add(chunk);
-        Set<GrabbedChunks> grabbedChunks = currentlyGrabbed.computeIfAbsent(chunk, c -> new HashSet<>());
+        Set<BukkitGrabbedChunks> grabbedChunks = currentlyGrabbed.computeIfAbsent(chunk, c -> new HashSet<>());
         if (grabbedChunks.add(this) && useTickets) {
             chunk.addPluginChunkTicket(CubeCoreBukkit.getInstance());
         }
@@ -51,7 +51,7 @@ public final class GrabbedChunks implements Closeable {
         }
         closed = true;
         for (Chunk chunk : chunks) {
-            Set<GrabbedChunks> grabbed = currentlyGrabbed.get(chunk);
+            Set<BukkitGrabbedChunks> grabbed = currentlyGrabbed.get(chunk);
             grabbed.remove(this);
             if (grabbed.isEmpty()) {
                 currentlyGrabbed.remove(chunk);

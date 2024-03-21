@@ -1,4 +1,4 @@
-package io.siggi.cubecore.bukkit.location;
+package io.siggi.cubecore.location;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

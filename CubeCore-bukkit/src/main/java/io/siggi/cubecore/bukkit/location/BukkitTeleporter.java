@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class Teleporter {
+public class BukkitTeleporter {
     private static TeleporterAbstract implementation = new TeleporterDefaultImplementation();
 
     public static void setImplementation(TeleporterAbstract impl) {

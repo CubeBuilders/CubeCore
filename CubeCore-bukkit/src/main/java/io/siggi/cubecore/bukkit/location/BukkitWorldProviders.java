@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import io.siggi.cubecore.location.WorldID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -14,19 +16,19 @@ import org.bukkit.plugin.Plugin;
 import static io.siggi.cubecore.util.CubeCoreUtil.iterable;
 import static io.siggi.cubecore.util.CubeCoreUtil.iterateCollectionOfCollection;
 
-public class WorldProviders {
-    private static final Map<Plugin, List<WorldProvider>> providersByPlugin = new HashMap<>();
+public class BukkitWorldProviders {
+    private static final Map<Plugin, List<BukkitWorldProvider>> providersByPlugin = new HashMap<>();
     private static final Listener listener = new WorldProvidersListener();
 
-    private WorldProviders() {
+    private BukkitWorldProviders() {
     }
 
-    public static void register(Plugin plugin, WorldProvider provider) {
+    public static void register(Plugin plugin, BukkitWorldProvider provider) {
         if (plugin == null || provider == null)
             throw new NullPointerException();
         if (!plugin.isEnabled())
             throw new IllegalStateException("Plugin " + plugin.getName() + " is not enabled!");
-        List<WorldProvider> providers = providersByPlugin.computeIfAbsent(plugin, k -> new ArrayList<>());
+        List<BukkitWorldProvider> providers = providersByPlugin.computeIfAbsent(plugin, k -> new ArrayList<>());
         providers.add(provider);
     }
 
@@ -37,7 +39,7 @@ public class WorldProviders {
      */
     public static boolean isWorldLoadable(WorldID worldId) {
         if (Bukkit.getWorld(worldId.getUid()) != null || Bukkit.getWorld(worldId.getName()) != null) return true;
-        for (WorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
+        for (BukkitWorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
             try {
                 if (provider.isWorldLoadable(worldId))
                     return true;
@@ -62,7 +64,7 @@ public class WorldProviders {
             if (world != null) return world;
         }
 
-        for (WorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
+        for (BukkitWorldProvider provider : iterable(iterateCollectionOfCollection(providersByPlugin.values()))) {
             try {
                 World world = provider.loadWorld(worldId);
                 if (world != null)

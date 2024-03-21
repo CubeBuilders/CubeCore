@@ -4,6 +4,13 @@ import com.google.gson.GsonBuilder;
 import io.siggi.cubecore.apiserver.ApiServer;
 import io.siggi.cubecore.apiserver.ApiServerImpl;
 import io.siggi.cubecore.apiserver.ApiServerStartException;
+import io.siggi.cubecore.location.BlockLocation;
+import io.siggi.cubecore.location.CubeCoreLocation;
+import io.siggi.cubecore.location.ExactLocation;
+import io.siggi.cubecore.location.WorldID;
+import io.siggi.cubecore.location.set.BitMapBlockSet;
+import io.siggi.cubecore.location.set.BlockSet;
+import io.siggi.cubecore.location.set.CuboidBlockSet;
 import io.siggi.cubecore.usercache.TextureCache;
 import io.siggi.cubecore.usercache.UserCache;
 import io.siggi.cubecore.userinfo.UserDatabase;
@@ -200,9 +207,20 @@ public class CubeCore {
 
     public static GsonBuilder registerTypeAdapters(GsonBuilder builder) {
         instance.plugin.registerTypeAdapters(builder);
+
         builder.registerTypeAdapter(FormattedText.class, FormattedText.typeAdapter);
         builder.registerTypeAdapter(TextPiece.class, TextPiece.typeAdapter);
         builder.registerTypeAdapter(ChatColor.class, TextPiece.chatColorTypeAdapter);
+
+        builder.registerTypeAdapter(BlockLocation.class, BlockLocation.typeAdapter);
+        builder.registerTypeAdapter(CubeCoreLocation.class, CubeCoreLocation.typeAdapter);
+        builder.registerTypeAdapter(ExactLocation.class, ExactLocation.typeAdapter);
+        builder.registerTypeAdapter(WorldID.class, WorldID.typeAdapter);
+
+        builder.registerTypeAdapter(BlockSet.class, BlockSet.typeAdapter);
+        builder.registerTypeAdapter(BitMapBlockSet.class, BitMapBlockSet.typeAdapter);
+        builder.registerTypeAdapter(CuboidBlockSet.class, CuboidBlockSet.typeAdapter);
+
         return builder;
     }
 

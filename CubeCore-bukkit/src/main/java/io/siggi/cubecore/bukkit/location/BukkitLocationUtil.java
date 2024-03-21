@@ -1,5 +1,9 @@
 package io.siggi.cubecore.bukkit.location;
 
+import io.siggi.cubecore.location.BlockLocation;
+import io.siggi.cubecore.location.CubeCoreLocation;
+import io.siggi.cubecore.location.ExactLocation;
+import io.siggi.cubecore.location.WorldID;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -32,7 +36,7 @@ public class BukkitLocationUtil {
     }
 
     public static Location toBukkitLocation(CubeCoreLocation location) {
-        World world = WorldProviders.loadWorld(location.getWorld());
+        World world = BukkitWorldProviders.loadWorld(location.getWorld());
         if (world == null)
             return null;
         return new Location(
