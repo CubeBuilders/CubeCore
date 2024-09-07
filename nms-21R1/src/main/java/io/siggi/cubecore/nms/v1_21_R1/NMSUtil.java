@@ -1,4 +1,4 @@
-package io.siggi.cubecore.nms.v1_20_R4;
+package io.siggi.cubecore.nms.v1_21_R1;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -29,12 +29,12 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.entity.TileEntitySkull;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_20_R4.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R1.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_21_R1.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Hoglin;
@@ -62,7 +62,7 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
     public SkinSettings getSkinSettings(@Nonnull Player p) {
         CraftPlayer pl = (CraftPlayer) p;
         EntityPlayer handle = pl.getHandle();
-        return new SkinSettings((Integer) handle.ap().a(PA.getClientSettings()));
+        return new SkinSettings((Integer) handle.ar().a(PA.getClientSettings()));
     }
 
     @Nonnull
@@ -70,7 +70,7 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
     public ChatSetting getChatSetting(@Nonnull Player p) {
         CraftPlayer pl = (CraftPlayer) p;
         EntityPlayer handle = pl.getHandle();
-        EnumChatVisibility nmsVisibility = handle.D();
+        EnumChatVisibility nmsVisibility = handle.E();
         if (nmsVisibility == null) {
             return ChatSetting.ON;
         }
@@ -94,7 +94,7 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
     @Override
     public void setRenderDistance(@Nonnull org.bukkit.World world, int distance) {
         try {
-            org.bukkit.craftbukkit.v1_20_R4.CraftWorld cw = (org.bukkit.craftbukkit.v1_20_R4.CraftWorld) world;
+            org.bukkit.craftbukkit.v1_21_R1.CraftWorld cw = (org.bukkit.craftbukkit.v1_21_R1.CraftWorld) world;
             WorldServer handle = cw.getHandle();
             getMethod(PlayerChunkMap.class, "a", int.class).invoke(handle.l().a, distance);
         } catch (Exception e) {
@@ -177,7 +177,7 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
         EntityLiving ent = ce.getHandle();
         if (ent instanceof EntityInsentient) {
             EntityInsentient ei = (EntityInsentient) ent;
-            ei.K().a(x, y, z, 1.0D);
+            ei.N().a(x, y, z, 1.0D);
         }
     }
 
@@ -201,11 +201,11 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
         }
 
         public static DataWatcherObject<?> getClientSettings() {
-            return bV;
+            return bX;
         }
 
         public static DataWatcherObject<?> getMainHandSetting() {
-            return bW;
+            return bY;
         }
     }
 }
