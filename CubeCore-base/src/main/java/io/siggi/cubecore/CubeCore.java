@@ -233,8 +233,6 @@ public class CubeCore {
             }
             try {
                 Field field = HttpURLConnection.class.getDeclaredField("methods");
-                ReflectionFreedom.setAccessible(field, true);
-                ReflectionFreedom.setModifiers(field, field.getModifiers() & ~Modifier.FINAL);
                 allowedMethodsField = field;
             } catch (Exception e) {
                 throw new UnsupportedOperationException();
@@ -244,15 +242,15 @@ public class CubeCore {
             throw new NullPointerException();
         }
         try {
-            String[] methods = (String[]) allowedMethodsField.get(null);
+            String[] methods = (String[]) ReflectionFreedom.getStaticObjectField(allowedMethodsField);
             for (String m : methods) {
                 if (m.equals(method)) return;
             }
             String[] newMethods = new String[methods.length + 1];
             System.arraycopy(methods, 0, newMethods, 0, methods.length);
             newMethods[newMethods.length - 1] = method;
-            allowedMethodsField.set(null, newMethods);
-        } catch (IllegalAccessException e) {
+            ReflectionFreedom.setStaticObjectField(allowedMethodsField, newMethods);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
