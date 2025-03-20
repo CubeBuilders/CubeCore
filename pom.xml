@@ -64,5 +64,6 @@
         <module>nms-20R4</module>
         <module>nms-21R1</module>
         <module>nms-21R2</module>
+        <module>nms-21R3</module>
     </modules>
 </project>
