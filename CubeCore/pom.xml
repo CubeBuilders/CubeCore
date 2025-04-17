@@ -168,6 +168,11 @@
             <artifactId>CubeCore-nms-21R3</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.siggi</groupId>
+            <artifactId>CubeCore-nms-21R4</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>CubeCore</finalName>
