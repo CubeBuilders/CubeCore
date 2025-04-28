@@ -1,40 +1,29 @@
 package io.siggi.cubecore.nms.v1_20_R4;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import io.siggi.cubecore.nms.AuthLibProperty;
 import io.siggi.cubecore.nms.ChatSetting;
 import io.siggi.cubecore.nms.SkinSettings;
-import java.lang.reflect.InvocationTargetException;
 import javax.annotation.Nonnull;
 
-import net.minecraft.core.IRegistryCustom;
-import net.minecraft.nbt.DynamicOpsNBT;
-import net.minecraft.nbt.GameProfileSerializer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityStatus;
-import net.minecraft.network.protocol.game.PacketPlayOutTileEntityData;
-import net.minecraft.network.syncher.DataWatcherObject;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.PlayerChunkMap;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.entity.EntityInsentient;
-import net.minecraft.world.entity.EntityLiving;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.entity.player.EnumChatVisibility;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.ChatVisiblity;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.level.block.entity.TileEntitySkull;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_20_R4.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.block.CraftSkull;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Hoglin;
@@ -47,6 +36,8 @@ import org.bukkit.entity.PolarBear;
 import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Wolf;
+
+import static net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION;
 
 public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
 
@@ -61,25 +52,25 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
     @Override
     public SkinSettings getSkinSettings(@Nonnull Player p) {
         CraftPlayer pl = (CraftPlayer) p;
-        EntityPlayer handle = pl.getHandle();
-        return new SkinSettings((Integer) handle.ap().a(PA.getClientSettings()));
+        ServerPlayer handle = pl.getHandle();
+        return new SkinSettings((int) handle.getEntityData().get(DATA_PLAYER_MODE_CUSTOMISATION));
     }
 
     @Nonnull
     @Override
     public ChatSetting getChatSetting(@Nonnull Player p) {
         CraftPlayer pl = (CraftPlayer) p;
-        EntityPlayer handle = pl.getHandle();
-        EnumChatVisibility nmsVisibility = handle.D();
+        ServerPlayer handle = pl.getHandle();
+        ChatVisiblity nmsVisibility = handle.getChatVisibility();
         if (nmsVisibility == null) {
             return ChatSetting.ON;
         }
         switch (nmsVisibility) {
-            case a:
+            case FULL:
                 return ChatSetting.ON;
-            case b:
+            case SYSTEM:
                 return ChatSetting.COMMANDS_ONLY;
-            case c:
+            case HIDDEN:
                 return ChatSetting.OFF;
         }
         return ChatSetting.ON;
@@ -94,9 +85,8 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
     @Override
     public void setRenderDistance(@Nonnull org.bukkit.World world, int distance) {
         try {
-            org.bukkit.craftbukkit.v1_20_R4.CraftWorld cw = (org.bukkit.craftbukkit.v1_20_R4.CraftWorld) world;
-            WorldServer handle = cw.getHandle();
-            getMethod(PlayerChunkMap.class, "a", int.class).invoke(handle.l().a, distance);
+            org.bukkit.craftbukkit.CraftWorld cw = (org.bukkit.craftbukkit.CraftWorld) world;
+            cw.getHandle().getChunkSource().chunkMap.setServerViewDistance(distance);
         } catch (Exception e) {
         }
     }
@@ -110,30 +100,21 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
             return;
         }
         CraftPlayer cp = (CraftPlayer) p;
-        cp.getHandle().c.b((Packet<?>) packet);
+        cp.getHandle().connection.send((Packet<?>) packet);
     }
 
     @Override
     public Object createPacketSetSkullProfile(@Nonnull Skull skull, GameProfile gameProfile) {
         CraftSkull cs = (CraftSkull) skull;
-        TileEntitySkull tileEntity;
-        try {
-            // getTileEntity() changed from public to protected, so we have to use reflection now.
-            tileEntity = (TileEntitySkull) getMethod(CraftBlockEntityState.class, "getTileEntity").invoke(cs);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        }
-        NBTTagCompound tag = tileEntity.a(registryAccess());
+        SkullBlockEntity tileEntity = cs.getTileEntity();
+        CompoundTag tag = tileEntity.getUpdateTag(registryAccess());
         if (gameProfile == null) {
-            // r = remove
-            tag.r("profile");
+            tag.remove("profile");
         } else {
-            NBTBase gameProfileTag = ResolvableProfile.a.encodeStart(DynamicOpsNBT.a, new ResolvableProfile(gameProfile)).getOrThrow();
-            // a = set
-            tag.a("profile", gameProfileTag);
+            Tag gameProfileTag = ResolvableProfile.CODEC.encodeStart(NbtOps.INSTANCE, new ResolvableProfile(gameProfile)).getOrThrow();
+            tag.put("profile", gameProfileTag);
         }
-        // TileEntityTypes.o = skull
-        return PacketPlayOutTileEntityData.a(tileEntity, (te, ra) -> tag);
+        return ClientboundBlockEntityDataPacket.create(tileEntity, (te, ra) -> tag);
     }
 
     @Override
@@ -168,16 +149,16 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
         CraftEntity craftEntity = (CraftEntity) entity;
         net.minecraft.world.entity.Entity nmsEntity = craftEntity.getHandle();
 
-        return new PacketPlayOutEntityStatus(nmsEntity, (byte) status);
+        return new ClientboundEntityEventPacket(nmsEntity, (byte) status);
     }
 
     @Override
     public void setWalkDestination(@Nonnull LivingEntity entity, double x, double y, double z) {
         CraftLivingEntity ce = (CraftLivingEntity) entity;
-        EntityLiving ent = ce.getHandle();
-        if (ent instanceof EntityInsentient) {
-            EntityInsentient ei = (EntityInsentient) ent;
-            ei.K().a(x, y, z, 1.0D);
+        net.minecraft.world.entity.LivingEntity ent = ce.getHandle();
+        if (ent instanceof net.minecraft.world.entity.Mob) {
+            net.minecraft.world.entity.Mob ei = (net.minecraft.world.entity.Mob) ent;
+            ei.getNavigation().moveTo(x, y, z, 1.0D);
         }
     }
 
@@ -185,27 +166,12 @@ public class NMSUtil extends io.siggi.cubecore.nms.NMSUtil {
 
     private MinecraftServer getMinecraftServer() {
         if (minecraftServer == null) {
-            minecraftServer = ((CraftServer) Bukkit.getServer()).getHandle().b();
+            minecraftServer = ((CraftServer) Bukkit.getServer()).getHandle().getServer();
         }
         return minecraftServer;
     }
 
-    private IRegistryCustom.Dimension registryAccess() {
-        return getMinecraftServer().bc();
-    }
-
-    private abstract static class PA extends EntityHuman {
-
-        private PA() {
-            super(null, null, 0.0f, null);
-        }
-
-        public static DataWatcherObject<?> getClientSettings() {
-            return bV;
-        }
-
-        public static DataWatcherObject<?> getMainHandSetting() {
-            return bW;
-        }
+    private RegistryAccess.Frozen registryAccess() {
+        return getMinecraftServer().registryAccess();
     }
 }

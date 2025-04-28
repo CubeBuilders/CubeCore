@@ -2,18 +2,18 @@ package io.siggi.cubecore.nms.v1_20_R4;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.minecraft.commands.arguments.ArgumentChat;
-import net.minecraft.commands.synchronization.CompletionProviders;
+import net.minecraft.commands.arguments.MessageArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
 
 public class BrigadierUtil extends io.siggi.cubecore.nms.BrigadierUtil {
 
     @Override
     public ArgumentType argumentTypeChat() {
-        return ArgumentChat.a();
+        return MessageArgument.message();
     }
 
     @Override
     public SuggestionProvider suggestionProviderAskServer() {
-        return CompletionProviders.a;
+        return SuggestionProviders.ASK_SERVER;
     }
 }

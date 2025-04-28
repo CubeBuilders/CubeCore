@@ -19,9 +19,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.20.2-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper</artifactId>
+            <version>1.21.5-R0.1-SNAPSHOT</version>
             <classifier>shaded</classifier>
             <scope>provided</scope>
             <exclusions>
